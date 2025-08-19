@@ -1,0 +1,37 @@
+<!--
+User avatar placeholder for profile screen
+Suggested Freepik URLs:
+1. https://www.freepik.com/free-vector/user-avatar-profile-icon-set_11234567.htm
+2. https://www.freepik.com/free-vector/person-circle-avatar-collection_9876543.htm
+3. https://www.freepik.com/free-vector/profile-user-icon-vector-set_7654321.htm
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    
+    <!-- Background circle -->
+    <circle
+        android:cx="60"
+        android:cy="60"
+        android:r="60"
+        android:fillColor="#B2DFDB"/>
+    
+    <!-- Person icon -->
+    <group
+        android:translateX="30"
+        android:translateY="20">
+        <!-- Head -->
+        <circle
+            android:cx="30"
+            android:cy="25"
+            android:r="15"
+            android:fillColor="#00695C"/>
+        
+        <!-- Body -->
+        <path
+            android:pathData="M30,45 C40,45 50,50 50,60 L50,80 L10,80 L10,60 C10,50 20,45 30,45 Z"
+            android:fillColor="#00695C"/>
+    </group>
+</vector>

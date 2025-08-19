@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material Design 3 Dark Theme Colors - Teal Primary -->
+    <color name="md_theme_dark_primary">#26A69A</color>
+    <color name="md_theme_dark_onPrimary">#003731</color>
+    <color name="md_theme_dark_primaryContainer">#00534A</color>
+    <color name="md_theme_dark_onPrimaryContainer">#B2DFDB</color>
+    <color name="md_theme_dark_secondary">#80CBC4</color>
+    <color name="md_theme_dark_onSecondary">#004A40</color>
+    <color name="md_theme_dark_secondaryContainer">#00695C</color>
+    <color name="md_theme_dark_onSecondaryContainer">#E0F2F1</color>
+    <color name="md_theme_dark_tertiary">#A7FFEB</color>
+    <color name="md_theme_dark_onTertiary">#00695C</color>
+    <color name="md_theme_dark_tertiaryContainer">#004A40</color>
+    <color name="md_theme_dark_onTertiaryContainer">#F0FFF4</color>
+    <color name="md_theme_dark_error">#FFB4AB</color>
+    <color name="md_theme_dark_onError">#690005</color>
+    <color name="md_theme_dark_errorContainer">#93000A</color>
+    <color name="md_theme_dark_onErrorContainer">#FFDAD6</color>
+    <color name="md_theme_dark_outline">#899391</color>
+    <color name="md_theme_dark_outlineVariant">#414946</color>
+    <color name="md_theme_dark_surface">#101413</color>
+    <color name="md_theme_dark_onSurface">#EFF1EE</color>
+    <color name="md_theme_dark_surfaceVariant">#414946</color>
+    <color name="md_theme_dark_onSurfaceVariant">#BFC9C7</color>
+    <color name="md_theme_dark_inverseSurface">#EFF1EE</color>
+    <color name="md_theme_dark_inverseOnSurface">#2E312F</color>
+    <color name="md_theme_dark_inversePrimary">#00695C</color>
+    
+    <!-- Additional colors for dark theme -->
+    <color name="surface_elevated">#1F2421</color>
+</resources>

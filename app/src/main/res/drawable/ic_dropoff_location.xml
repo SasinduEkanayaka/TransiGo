@@ -1,0 +1,29 @@
+<!--
+Drop-off location icon for booking form
+Suggested Freepik URLs:
+1. https://www.freepik.com/free-vector/destination-flag-icon-set_11234567.htm
+2. https://www.freepik.com/free-vector/finish-line-flag-icons_9876543.htm
+3. https://www.freepik.com/free-vector/goal-destination-pin-marker_7654321.htm
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    
+    <!-- Flag pole -->
+    <path
+        android:pathData="M4,2 L4,22 L6,22 L6,2 Z"
+        android:fillColor="#4DB6AC"/>
+    
+    <!-- Flag -->
+    <path
+        android:pathData="M6,2 L6,12 C10,10 14,14 18,12 L18,4 C14,6 10,2 6,2 Z"
+        android:fillColor="#00695C"/>
+    
+    <!-- Flag pattern -->
+    <path
+        android:pathData="M6,4 L6,10 C8.67,9 11.33,11 14,10 L14,6 C11.33,7 8.67,5 6,4 Z"
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.3"/>
+</vector>

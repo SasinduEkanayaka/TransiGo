@@ -1,0 +1,121 @@
+<!--
+Login/Register screen banner image
+Suggested Freepik URLs:
+1. https://www.freepik.com/free-vector/mobile-login-concept-illustration_8765432.htm
+2. https://www.freepik.com/free-vector/secure-login-banner-template_12345678.htm
+3. https://www.freepik.com/free-vector/authentication-abstract-concept_9876543.htm
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="300dp"
+    android:height="200dp"
+    android:viewportWidth="300"
+    android:viewportHeight="200">
+    
+    <!-- Background gradient -->
+    <path
+        android:pathData="M0,0 L300,0 L300,200 L0,200 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="0"
+                android:startY="0"
+                android:endX="300"
+                android:endY="200"
+                android:startColor="#E0F2F1"
+                android:endColor="#B2DFDB"
+                android:type="linear"/>
+        </aapt:attr>
+    </path>
+    
+    <!-- Mobile device -->
+    <group
+        android:translateX="120"
+        android:translateY="40">
+        <!-- Phone body -->
+        <rect
+            android:x="0"
+            android:y="0"
+            android:width="60"
+            android:height="100"
+            android:rx="12"
+            android:ry="12"
+            android:fillColor="#00695C"/>
+        
+        <!-- Screen -->
+        <rect
+            android:x="5"
+            android:y="10"
+            android:width="50"
+            android:height="70"
+            android:rx="4"
+            android:ry="4"
+            android:fillColor="#FFFFFF"/>
+        
+        <!-- Screen content lines -->
+        <rect
+            android:x="10"
+            android:y="20"
+            android:width="40"
+            android:height="3"
+            android:rx="1.5"
+            android:fillColor="#B2DFDB"/>
+        
+        <rect
+            android:x="10"
+            android:y="28"
+            android:width="30"
+            android:height="3"
+            android:rx="1.5"
+            android:fillColor="#B2DFDB"/>
+        
+        <rect
+            android:x="10"
+            android:y="40"
+            android:width="40"
+            android:height="8"
+            android:rx="4"
+            android:fillColor="#00695C"/>
+        
+        <rect
+            android:x="10"
+            android:y="55"
+            android:width="40"
+            android:height="8"
+            android:rx="4"
+            android:fillColor="#4DB6AC"/>
+        
+        <!-- Home button -->
+        <circle
+            android:cx="30"
+            android:cy="90"
+            android:r="4"
+            android:fillColor="#4DB6AC"/>
+    </group>
+    
+    <!-- Security shield -->
+    <group
+        android:translateX="50"
+        android:translateY="60">
+        <path
+            android:pathData="M20,2 L20,8 C20,14 16,19.09 10,20.81 L10,2 L20,2 Z"
+            android:fillColor="#4DB6AC"
+            android:fillAlpha="0.7"/>
+        
+        <!-- Checkmark -->
+        <path
+            android:pathData="M13,12 L16,15 L21,10"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="2"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:fillColor="transparent"/>
+    </group>
+    
+    <!-- Key icon -->
+    <group
+        android:translateX="200"
+        android:translateY="80">
+        <path
+            android:pathData="M7,14 C5.9,14 5,13.1 5,12 C5,10.9 5.9,10 7,10 C8.1,10 9,10.9 9,12 C9,13.1 8.1,14 7,14 Z M12.65,10 C11.83,7.67 9.61,6 7,6 C3.69,6 1,8.69 1,12 C1,15.31 3.69,18 7,18 C9.61,18 11.83,16.33 12.65,14 L17,14 L17,16 L19,16 L19,14 L21,14 L21,10 L12.65,10 Z"
+            android:fillColor="#80CBC4"/>
+    </group>
+</vector>
