@@ -13,8 +13,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class ProfileRepository @Inject constructor(
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance(),
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val firestore: FirebaseFirestore,
+    private val auth: FirebaseAuth
 ) {
     private val usersCollection = firestore.collection("users")
 

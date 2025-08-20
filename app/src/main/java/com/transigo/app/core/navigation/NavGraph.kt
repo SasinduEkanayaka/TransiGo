@@ -32,15 +32,16 @@ import com.transigo.app.data.model.UserType
 @Composable
 fun NavGraph(
     navController: NavHostController = rememberNavController(),
-    authViewModel: AuthViewModel = viewModel()
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     // Observe the current user state to determine start destination
     val user by authViewModel.user.collectAsState()
     
     // Determine start destination based on authentication state and user role
+    val currentUser = user
     val startDestination = when {
-        user == null -> NavigationRoutes.AUTH
-        user.userType == UserType.ADMIN -> NavigationRoutes.ADMIN_DASHBOARD
+        currentUser == null -> NavigationRoutes.AUTH
+        currentUser.userType == UserType.ADMIN -> NavigationRoutes.ADMIN_DASHBOARD
         else -> NavigationRoutes.HOME
     }
 

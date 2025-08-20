@@ -27,7 +27,7 @@ data class DashboardStats(
  */
 @Singleton
 class AdminDashboardRepository @Inject constructor(
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val firestore: FirebaseFirestore
 ) {
     private val bookingsCollection = firestore.collection("bookings")
     private val driversCollection = firestore.collection("drivers")

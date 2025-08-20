@@ -27,7 +27,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.transigo.app.core.navigation.NavigationRoutes
 import com.transigo.app.R
@@ -40,7 +40,7 @@ import com.transigo.app.R
 @Composable
 fun RegisterScreen(
     navController: NavController,
-    viewModel: AuthViewModel = viewModel()
+    viewModel: AuthViewModel = hiltViewModel()
 ) {
     // State variables for form inputs
     var fullName by remember { mutableStateOf("") }

@@ -18,7 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.transigo.app.auth.AuthViewModel
 import com.transigo.app.core.navigation.NavigationRoutes
@@ -28,7 +28,7 @@ import com.transigo.app.R
 @Composable
 fun HomeScreen(
     navController: NavController,
-    authViewModel: AuthViewModel = viewModel()
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     // Observe user state for authentication
     val user by authViewModel.user.collectAsState()

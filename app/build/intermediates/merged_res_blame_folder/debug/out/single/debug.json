@@ -1,0 +1,54 @@
+[
+    {
+        "merged": "com.transigo.app-merged_res-73:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.transigo.app-main-75:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-73:/xml_backup_rules.xml.flat",
+        "source": "com.transigo.app-main-75:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-73:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.transigo.app-main-75:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-73:/drawable_ic_notification.xml.flat",
+        "source": "com.transigo.app-main-75:/drawable/ic_notification.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-73:/drawable_ic_route.xml.flat",
+        "source": "com.transigo.app-main-75:/drawable/ic_route.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-73:/drawable_ic_dropoff_location.xml.flat",
+        "source": "com.transigo.app-main-75:/drawable/ic_dropoff_location.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-73:/xml_data_extraction_rules.xml.flat",
+        "source": "com.transigo.app-main-75:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-73:/drawable_ic_booking_ticket.xml.flat",
+        "source": "com.transigo.app-main-75:/drawable/ic_booking_ticket.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-73:/drawable_ic_auth_banner.xml.flat",
+        "source": "com.transigo.app-main-75:/drawable/ic_auth_banner.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-73:/drawable_ic_avatar_placeholder.xml.flat",
+        "source": "com.transigo.app-main-75:/drawable/ic_avatar_placeholder.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-73:/drawable_ic_banner_transport.xml.flat",
+        "source": "com.transigo.app-main-75:/drawable/ic_banner_transport.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-73:/drawable_ic_pickup_location.xml.flat",
+        "source": "com.transigo.app-main-75:/drawable/ic_pickup_location.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-73:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.transigo.app-main-75:/drawable/ic_launcher_foreground.xml"
+    }
+]

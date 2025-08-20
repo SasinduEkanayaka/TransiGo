@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.transigo.app-mergeDebugResources-71:/values-ldltr-v21/values-ldltr-v21.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\malak\\.gradle\\caches\\transforms-3\\ecf36eda68bbef91ce4b556d5d6fb484\\transformed\\appcompat-1.6.1\\res\\values-ldltr-v21\\values-ldltr-v21.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "112",
+                        "endOffsets": "163"
+                    }
+                }
+            ]
+        }
+    ]
+}

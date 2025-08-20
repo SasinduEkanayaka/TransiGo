@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
-    id("dagger.hilt.android.plugin")
+    id("com.google.dagger.hilt.android")
     kotlin("kapt")
 }
 
@@ -45,7 +45,8 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.6"
     }
-    packaging {
+    @Suppress("UnstableApiUsage")
+    packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -56,6 +57,9 @@ dependencies {
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("com.google.android.material:material:1.12.0")
+    // Compose Material Icons
+    implementation("androidx.compose.material:material-icons-extended")
 
     // Compose BOM
     implementation(platform("androidx.compose:compose-bom:2023.05.01"))

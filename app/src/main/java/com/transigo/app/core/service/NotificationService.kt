@@ -13,7 +13,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class NotificationService @Inject constructor(
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val firestore: FirebaseFirestore
 ) {
     private val usersCollection = firestore.collection("users")
     

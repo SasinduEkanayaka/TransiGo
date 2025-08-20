@@ -37,7 +37,7 @@ import java.util.*
 fun BookingFormScreen(
     navController: NavController,
     bookingViewModel: BookingViewModel = viewModel(),
-    authViewModel: AuthViewModel = viewModel()
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val state by bookingViewModel.state.collectAsState()
     val user by authViewModel.user.collectAsState()

@@ -69,11 +69,13 @@ fun AdminBookingsScreen(
                     }
                 }
                 error != null -> {
-                    ErrorContent(
-                        error = error,
-                        onRetry = viewModel::loadBookings,
-                        onDismiss = viewModel::clearError
-                    )
+                    error?.let { errMsg ->
+                        ErrorContent(
+                            error = errMsg,
+                            onRetry = viewModel::loadBookings,
+                            onDismiss = viewModel::clearError
+                        )
+                    }
                 }
                 bookings.isEmpty() -> {
                     EmptyStateContent(currentFilter)

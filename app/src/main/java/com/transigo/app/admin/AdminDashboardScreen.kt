@@ -25,7 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.transigo.app.auth.AuthViewModel
 import com.transigo.app.core.navigation.NavigationRoutes
@@ -34,7 +33,7 @@ import com.transigo.app.core.navigation.NavigationRoutes
 @Composable
 fun AdminDashboardScreen(
     navController: NavController,
-    authViewModel: AuthViewModel = viewModel(),
+    authViewModel: AuthViewModel = hiltViewModel(),
     dashboardViewModel: AdminDashboardViewModel = hiltViewModel()
 ) {
     val user by authViewModel.user.collectAsState()

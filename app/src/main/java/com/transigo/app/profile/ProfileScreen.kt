@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.transigo.app.auth.AuthViewModel
 import com.transigo.app.R
@@ -26,8 +26,8 @@ import com.transigo.app.R
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    profileViewModel: ProfileViewModel = viewModel(),
-    authViewModel: AuthViewModel = viewModel()
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val user by profileViewModel.user.collectAsState()
     val uiState by profileViewModel.uiState.collectAsState()

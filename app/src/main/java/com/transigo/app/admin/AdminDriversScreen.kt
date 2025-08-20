@@ -11,6 +11,26 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// Compose/UI imports
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+
 data class DriverUiState(
     val drivers: List<Driver> = emptyList(),
     val filteredDrivers: List<Driver> = emptyList(),
@@ -49,7 +69,7 @@ class DriverViewModel @Inject constructor(
                         } else {
                             drivers.filter { driver ->
                                 driver.fullName.contains(currentState.searchQuery, ignoreCase = true) ||
-                                driver.phone.contains(currentState.searchQuery) ||
+                                driver.phoneNumber.contains(currentState.searchQuery) ||
                                 driver.vehicleNumber.contains(currentState.searchQuery, ignoreCase = true)
                             }
                         }
@@ -75,7 +95,7 @@ class DriverViewModel @Inject constructor(
                         } else {
                             currentState.drivers.filter { driver ->
                                 driver.fullName.contains(query, ignoreCase = true) ||
-                                driver.phone.contains(query) ||
+                                driver.phoneNumber.contains(query) ||
                                 driver.vehicleNumber.contains(query, ignoreCase = true)
                             }
                         }
@@ -171,7 +191,7 @@ class DriverViewModel @Inject constructor(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdminDriversScreen(
+fun AdminDriversScreenContent(
     modifier: Modifier = Modifier,
     viewModel: DriverViewModel = hiltViewModel()
 ) {
@@ -261,6 +281,12 @@ fun AdminDriversScreen(
     }
 }
 
+// Wrapper matching NavGraph signature
+@Composable
+fun AdminDriversScreen(navController: NavController) {
+    AdminDriversScreenContent()
+}
+
 @Composable
 fun DriverItem(
     driver: Driver,
@@ -287,7 +313,7 @@ fun DriverItem(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Phone: ${driver.phone}",
+                        text = "Phone: ${driver.phoneNumber}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -330,6 +356,7 @@ fun DriverItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DriverDialog(
     driver: Driver?,
@@ -338,7 +365,7 @@ fun DriverDialog(
     modifier: Modifier = Modifier
 ) {
     var fullName by remember { mutableStateOf(driver?.fullName ?: "") }
-    var phone by remember { mutableStateOf(driver?.phone ?: "") }
+    var phone by remember { mutableStateOf(driver?.phoneNumber ?: "") }
     var vehicleType by remember { mutableStateOf(driver?.vehicleType ?: VehicleType.CAR) }
     var vehicleNumber by remember { mutableStateOf(driver?.vehicleNumber ?: "") }
     var isActive by remember { mutableStateOf(driver?.isActive ?: true) }
@@ -429,7 +456,7 @@ fun DriverDialog(
                     val newDriver = Driver(
                         id = driver?.id ?: "",
                         fullName = fullName,
-                        phone = phone,
+                        phoneNumber = phone,
                         vehicleType = vehicleType,
                         vehicleNumber = vehicleNumber,
                         isActive = isActive,
@@ -451,96 +478,4 @@ fun DriverDialog(
     )
 }
 
-// Adding imports and UI components
-
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.transigo.app.data.model.Driver
-import com.transigo.app.data.model.VehicleType
-
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.DirectionsCar
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AdminDriversScreen(navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        // Top App Bar
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-            }
-            Text(
-                text = "Manage Drivers",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 8.dp)
-            )
-        }
-
-        // Driver management content
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    imageVector = Icons.Default.DirectionsCar,
-                    contentDescription = "Drivers",
-                    modifier = Modifier.size(80.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "Driver Management",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Manage driver registrations, approvals, and assignments.",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-    }
-}
+// End of file

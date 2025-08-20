@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.transigo.app.data.model.User
 import com.transigo.app.data.repository.AuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,8 +15,9 @@ import kotlinx.coroutines.launch
  * ViewModel for managing authentication state and operations.
  * Exposes loading state, error messages, and current user information.
  */
-class AuthViewModel(
-    private val authRepository: AuthRepository = AuthRepository()
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     // Private mutable state flows

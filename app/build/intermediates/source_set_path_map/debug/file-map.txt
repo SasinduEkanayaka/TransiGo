@@ -1,0 +1,75 @@
+com.transigo.app-transition-1.5.0-0 C:\Users\malak\.gradle\caches\transforms-3\028e400ecf29dbb9714064e5ad9ff279\transformed\transition-1.5.0\res
+com.transigo.app-jetified-ui-geometry-1.4.3-1 C:\Users\malak\.gradle\caches\transforms-3\0512be67990786b05deb9c91d2d56647\transformed\jetified-ui-geometry-1.4.3\res
+com.transigo.app-recyclerview-1.1.0-2 C:\Users\malak\.gradle\caches\transforms-3\06d95552f8415a8fcfa0ccd6b087f1ba\transformed\recyclerview-1.1.0\res
+com.transigo.app-jetified-ui-test-manifest-1.4.3-3 C:\Users\malak\.gradle\caches\transforms-3\0777454972434c83354e931562218d26\transformed\jetified-ui-test-manifest-1.4.3\res
+com.transigo.app-jetified-foundation-1.4.3-4 C:\Users\malak\.gradle\caches\transforms-3\07e9fc586cf1e49862244a7455c8974e\transformed\jetified-foundation-1.4.3\res
+com.transigo.app-jetified-ui-text-1.4.3-5 C:\Users\malak\.gradle\caches\transforms-3\0801d57e3495581557afda3dda43413d\transformed\jetified-ui-text-1.4.3\res
+com.transigo.app-jetified-ui-unit-1.4.3-6 C:\Users\malak\.gradle\caches\transforms-3\0b1dcb95345c983fbea4e79f99f6e734\transformed\jetified-ui-unit-1.4.3\res
+com.transigo.app-jetified-activity-compose-1.8.0-7 C:\Users\malak\.gradle\caches\transforms-3\0ba482802e1dd48fe22f2fcdcaae517f\transformed\jetified-activity-compose-1.8.0\res
+com.transigo.app-navigation-runtime-ktx-2.6.0-8 C:\Users\malak\.gradle\caches\transforms-3\0fea5b5f3fbe9733adc95371a913df69\transformed\navigation-runtime-ktx-2.6.0\res
+com.transigo.app-cardview-1.0.0-9 C:\Users\malak\.gradle\caches\transforms-3\15ccd80015c7cb8ee65082d332c2b623\transformed\cardview-1.0.0\res
+com.transigo.app-jetified-lifecycle-viewmodel-ktx-2.6.2-10 C:\Users\malak\.gradle\caches\transforms-3\1e62d899ea347739c88088c2de0fb9cc\transformed\jetified-lifecycle-viewmodel-ktx-2.6.2\res
+com.transigo.app-jetified-activity-ktx-1.8.0-11 C:\Users\malak\.gradle\caches\transforms-3\22416732df0b8e1f86a98142728cf5a1\transformed\jetified-activity-ktx-1.8.0\res
+com.transigo.app-jetified-emoji2-views-helper-1.3.0-12 C:\Users\malak\.gradle\caches\transforms-3\294679a1c1a33812e7fbe90b8bd3bb73\transformed\jetified-emoji2-views-helper-1.3.0\res
+com.transigo.app-navigation-common-2.6.0-13 C:\Users\malak\.gradle\caches\transforms-3\311c816861cb42d63c4ef0d01907c2f1\transformed\navigation-common-2.6.0\res
+com.transigo.app-lifecycle-livedata-2.6.2-14 C:\Users\malak\.gradle\caches\transforms-3\353670a84c0ede34c178b7931a27d2bb\transformed\lifecycle-livedata-2.6.2\res
+com.transigo.app-coordinatorlayout-1.1.0-15 C:\Users\malak\.gradle\caches\transforms-3\36558776ab411a80fc6210829c6b0862\transformed\coordinatorlayout-1.1.0\res
+com.transigo.app-jetified-animation-core-1.4.3-16 C:\Users\malak\.gradle\caches\transforms-3\3be8e72c665c67710d36615a1e7bc152\transformed\jetified-animation-core-1.4.3\res
+com.transigo.app-core-1.13.0-17 C:\Users\malak\.gradle\caches\transforms-3\405e37def3d1eff1a0e41592988313d0\transformed\core-1.13.0\res
+com.transigo.app-jetified-lifecycle-runtime-ktx-2.6.2-18 C:\Users\malak\.gradle\caches\transforms-3\416fc8d63913c4dc5c6d0d911a29f314\transformed\jetified-lifecycle-runtime-ktx-2.6.2\res
+com.transigo.app-jetified-firebase-common-20.3.3-19 C:\Users\malak\.gradle\caches\transforms-3\448ff3e9c49a5ff9c44beaae2ef253ab\transformed\jetified-firebase-common-20.3.3\res
+com.transigo.app-jetified-runtime-1.4.3-20 C:\Users\malak\.gradle\caches\transforms-3\4d9b8ec5cc324115db7f4e11c55221a3\transformed\jetified-runtime-1.4.3\res
+com.transigo.app-drawerlayout-1.1.1-21 C:\Users\malak\.gradle\caches\transforms-3\507abefcd34448a9cb8e8da8fb469289\transformed\drawerlayout-1.1.1\res
+com.transigo.app-jetified-firebase-messaging-23.1.2-22 C:\Users\malak\.gradle\caches\transforms-3\52e3d48c53a4ebec44dbff7832ecbdad\transformed\jetified-firebase-messaging-23.1.2\res
+com.transigo.app-jetified-profileinstaller-1.3.0-23 C:\Users\malak\.gradle\caches\transforms-3\54fa6144bd8a3cff155dcf54bdfc59fb\transformed\jetified-profileinstaller-1.3.0\res
+com.transigo.app-jetified-ui-util-1.4.3-24 C:\Users\malak\.gradle\caches\transforms-3\58cc98b97c218a9a8187564eefec5e4a\transformed\jetified-ui-util-1.4.3\res
+com.transigo.app-jetified-ui-1.4.3-25 C:\Users\malak\.gradle\caches\transforms-3\598ccfdaa9610008a08370b700aefec7\transformed\jetified-ui-1.4.3\res
+com.transigo.app-material-1.12.0-26 C:\Users\malak\.gradle\caches\transforms-3\5a15dac9d092cf7ce9c0672ff1c432a1\transformed\material-1.12.0\res
+com.transigo.app-jetified-annotation-experimental-1.4.0-27 C:\Users\malak\.gradle\caches\transforms-3\5aeff7005f8526d462e15fad155e7938\transformed\jetified-annotation-experimental-1.4.0\res
+com.transigo.app-jetified-material3-1.1.0-28 C:\Users\malak\.gradle\caches\transforms-3\5d8a000769547263710df0bcaa643e11\transformed\jetified-material3-1.1.0\res
+com.transigo.app-jetified-material-icons-core-1.4.3-29 C:\Users\malak\.gradle\caches\transforms-3\5fe03fb5fcd83ddc5471036a5cbe5d97\transformed\jetified-material-icons-core-1.4.3\res
+com.transigo.app-jetified-material-icons-extended-1.4.3-30 C:\Users\malak\.gradle\caches\transforms-3\62d544ab146a0fab4d14bfd0ac697421\transformed\jetified-material-icons-extended-1.4.3\res
+com.transigo.app-jetified-animation-1.4.3-31 C:\Users\malak\.gradle\caches\transforms-3\67578ca32b2d9945c324740f3be4374c\transformed\jetified-animation-1.4.3\res
+com.transigo.app-jetified-material-1.4.3-32 C:\Users\malak\.gradle\caches\transforms-3\675fd278d5fdfbf38c4cf1e0fdb67695\transformed\jetified-material-1.4.3\res
+com.transigo.app-jetified-customview-poolingcontainer-1.0.0-33 C:\Users\malak\.gradle\caches\transforms-3\699a076c9fb42a1e575cb8a9e2675e7a\transformed\jetified-customview-poolingcontainer-1.0.0\res
+com.transigo.app-jetified-lifecycle-viewmodel-savedstate-2.6.2-34 C:\Users\malak\.gradle\caches\transforms-3\69d70cd1c50dbbf54a4f54bc80293750\transformed\jetified-lifecycle-viewmodel-savedstate-2.6.2\res
+com.transigo.app-lifecycle-viewmodel-2.6.2-35 C:\Users\malak\.gradle\caches\transforms-3\6b78952e32ce6f571f87d9887b13964b\transformed\lifecycle-viewmodel-2.6.2\res
+com.transigo.app-jetified-emoji2-1.3.0-36 C:\Users\malak\.gradle\caches\transforms-3\6f00d2d4392fdaedf38faff83d8916a4\transformed\jetified-emoji2-1.3.0\res
+com.transigo.app-jetified-foundation-layout-1.4.3-37 C:\Users\malak\.gradle\caches\transforms-3\71aefcf35283e6808157a00f7187697c\transformed\jetified-foundation-layout-1.4.3\res
+com.transigo.app-jetified-navigation-compose-2.6.0-38 C:\Users\malak\.gradle\caches\transforms-3\7bdb3b8c351f2d01f8a7d662e6001fe1\transformed\jetified-navigation-compose-2.6.0\res
+com.transigo.app-jetified-savedstate-ktx-1.2.1-39 C:\Users\malak\.gradle\caches\transforms-3\8a1b5ee60d40ef2caa1b4df64759acbf\transformed\jetified-savedstate-ktx-1.2.1\res
+com.transigo.app-jetified-lifecycle-viewmodel-compose-2.6.2-40 C:\Users\malak\.gradle\caches\transforms-3\8a474af357e72cd12a66d71678f5f2a6\transformed\jetified-lifecycle-viewmodel-compose-2.6.2\res
+com.transigo.app-jetified-play-services-basement-18.1.0-41 C:\Users\malak\.gradle\caches\transforms-3\9a6e58c9afd34bdca9f704ffb3ed05dc\transformed\jetified-play-services-basement-18.1.0\res
+com.transigo.app-jetified-appcompat-resources-1.6.1-42 C:\Users\malak\.gradle\caches\transforms-3\a398b443c60e0fa84c9086ecca27b277\transformed\jetified-appcompat-resources-1.6.1\res
+com.transigo.app-jetified-ui-tooling-1.4.3-43 C:\Users\malak\.gradle\caches\transforms-3\a3ec445c49d5119538a57e0dd7030688\transformed\jetified-ui-tooling-1.4.3\res
+com.transigo.app-fragment-1.5.1-44 C:\Users\malak\.gradle\caches\transforms-3\b2af6380bb9c2009c989663396509ea9\transformed\fragment-1.5.1\res
+com.transigo.app-core-runtime-2.2.0-45 C:\Users\malak\.gradle\caches\transforms-3\b623f3f1984897620139054c495be5a8\transformed\core-runtime-2.2.0\res
+com.transigo.app-jetified-ui-tooling-data-1.4.3-46 C:\Users\malak\.gradle\caches\transforms-3\bc452ac5905d1d03a988e2d892f8f67a\transformed\jetified-ui-tooling-data-1.4.3\res
+com.transigo.app-jetified-material-ripple-1.4.3-47 C:\Users\malak\.gradle\caches\transforms-3\be167ec9fa5f1d5301d91a5788467e4a\transformed\jetified-material-ripple-1.4.3\res
+com.transigo.app-jetified-viewpager2-1.0.0-48 C:\Users\malak\.gradle\caches\transforms-3\c2372a0b725b02eab9c7ff7a9093939f\transformed\jetified-viewpager2-1.0.0\res
+com.transigo.app-jetified-savedstate-1.2.1-49 C:\Users\malak\.gradle\caches\transforms-3\c3e6e904347d7ab985cf35aeaece4ba3\transformed\jetified-savedstate-1.2.1\res
+com.transigo.app-constraintlayout-2.0.1-50 C:\Users\malak\.gradle\caches\transforms-3\c8de2cf595c6254b40308e26e35abe3f\transformed\constraintlayout-2.0.1\res
+com.transigo.app-navigation-runtime-2.6.0-51 C:\Users\malak\.gradle\caches\transforms-3\ccb76a23032a5c36b4f5561389766579\transformed\navigation-runtime-2.6.0\res
+com.transigo.app-jetified-lifecycle-process-2.6.2-52 C:\Users\malak\.gradle\caches\transforms-3\cd4b37daec6c4a44d360a9f073c46f82\transformed\jetified-lifecycle-process-2.6.2\res
+com.transigo.app-jetified-activity-1.8.0-53 C:\Users\malak\.gradle\caches\transforms-3\d2b0b9ae1d59072b924dafd47d0be963\transformed\jetified-activity-1.8.0\res
+com.transigo.app-lifecycle-livedata-core-2.6.2-54 C:\Users\malak\.gradle\caches\transforms-3\d93dd43fc3d365fc51fe7acb95715e00\transformed\lifecycle-livedata-core-2.6.2\res
+com.transigo.app-lifecycle-runtime-2.6.2-55 C:\Users\malak\.gradle\caches\transforms-3\da17cd57cc74423b5e735a8c883f613d\transformed\lifecycle-runtime-2.6.2\res
+com.transigo.app-jetified-play-services-base-18.0.1-56 C:\Users\malak\.gradle\caches\transforms-3\dd99bb8c5033294f3e6c7d21c6f69be4\transformed\jetified-play-services-base-18.0.1\res
+com.transigo.app-jetified-hilt-navigation-compose-1.0.0-57 C:\Users\malak\.gradle\caches\transforms-3\e094745ede9dbdb4af80acb1077a6887\transformed\jetified-hilt-navigation-compose-1.0.0\res
+com.transigo.app-jetified-ui-graphics-1.4.3-58 C:\Users\malak\.gradle\caches\transforms-3\e388042cfaa0985fc998b20935075c7c\transformed\jetified-ui-graphics-1.4.3\res
+com.transigo.app-browser-1.4.0-59 C:\Users\malak\.gradle\caches\transforms-3\e3c9eaa9380d165d06101e7647ef669b\transformed\browser-1.4.0\res
+com.transigo.app-navigation-common-ktx-2.6.0-60 C:\Users\malak\.gradle\caches\transforms-3\e6c9c8227bf05d0390043f01e12b1a24\transformed\navigation-common-ktx-2.6.0\res
+com.transigo.app-appcompat-1.6.1-61 C:\Users\malak\.gradle\caches\transforms-3\ecf36eda68bbef91ce4b556d5d6fb484\transformed\appcompat-1.6.1\res
+com.transigo.app-jetified-runtime-saveable-1.4.3-62 C:\Users\malak\.gradle\caches\transforms-3\f1f88e566ffe2f132373ae3740453abd\transformed\jetified-runtime-saveable-1.4.3\res
+com.transigo.app-jetified-ui-tooling-preview-1.4.3-63 C:\Users\malak\.gradle\caches\transforms-3\f5b2d12d0b614b13474d3dfa2696cd2f\transformed\jetified-ui-tooling-preview-1.4.3\res
+com.transigo.app-jetified-core-ktx-1.13.0-64 C:\Users\malak\.gradle\caches\transforms-3\f676f9ae9923874a3d8930360e621930\transformed\jetified-core-ktx-1.13.0\res
+com.transigo.app-jetified-hilt-navigation-1.0.0-65 C:\Users\malak\.gradle\caches\transforms-3\f6f517e7bf59cfe051e935cd7e2f455b\transformed\jetified-hilt-navigation-1.0.0\res
+com.transigo.app-jetified-startup-runtime-1.1.1-66 C:\Users\malak\.gradle\caches\transforms-3\fd19637f2904962900889319b6e99e4b\transformed\jetified-startup-runtime-1.1.1\res
+com.transigo.app-google-services-67 D:\taxi app\TransiGo\app\build\generated\res\google-services\debug
+com.transigo.app-resValues-68 D:\taxi app\TransiGo\app\build\generated\res\resValues\debug
+com.transigo.app-rs-69 D:\taxi app\TransiGo\app\build\generated\res\rs\debug
+com.transigo.app-packageDebugResources-70 D:\taxi app\TransiGo\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.transigo.app-packageDebugResources-71 D:\taxi app\TransiGo\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.transigo.app-merged_res-72 D:\taxi app\TransiGo\app\build\intermediates\merged_res\debug
+com.transigo.app-debug-73 D:\taxi app\TransiGo\app\src\debug\res
+com.transigo.app-main-74 D:\taxi app\TransiGo\app\src\main\res
