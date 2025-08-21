@@ -25,10 +25,10 @@ import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookingHistoryScreen(
+fun BookingHistoryScreenLite(
     navController: NavController,
-    bookingViewModel: BookingViewModel = hiltViewModel(),
-    authViewModel: AuthViewModel = viewModel()
+    bookingViewModel: BookingViewModel = viewModel(),
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val state by bookingViewModel.state.collectAsState()
     val user by authViewModel.user.collectAsState()
@@ -107,7 +107,7 @@ fun BookingHistoryScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(state.bookings) { booking ->
-                    BookingCard(booking = booking)
+                    BookingCardLite(booking = booking)
                 }
             }
         }
@@ -115,7 +115,7 @@ fun BookingHistoryScreen(
 }
 
 @Composable
-fun BookingCard(booking: Booking) {
+fun BookingCardLite(booking: Booking) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -138,6 +138,8 @@ fun BookingCard(booking: Booking) {
                 Surface(
                     color = when (booking.status) {
                         BookingStatus.REQUESTED -> MaterialTheme.colorScheme.primary
+                        BookingStatus.APPROVED -> MaterialTheme.colorScheme.secondaryContainer
+                        BookingStatus.REJECTED -> MaterialTheme.colorScheme.errorContainer
                         BookingStatus.CONFIRMED -> MaterialTheme.colorScheme.tertiary
                         BookingStatus.IN_PROGRESS -> MaterialTheme.colorScheme.secondary
                         BookingStatus.COMPLETED -> MaterialTheme.colorScheme.primaryContainer
@@ -149,6 +151,8 @@ fun BookingCard(booking: Booking) {
                         text = booking.status.name,
                         color = when (booking.status) {
                             BookingStatus.COMPLETED -> MaterialTheme.colorScheme.onPrimaryContainer
+                            BookingStatus.APPROVED -> MaterialTheme.colorScheme.onSecondaryContainer
+                            BookingStatus.REJECTED -> MaterialTheme.colorScheme.onErrorContainer
                             else -> MaterialTheme.colorScheme.onPrimary
                         },
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),

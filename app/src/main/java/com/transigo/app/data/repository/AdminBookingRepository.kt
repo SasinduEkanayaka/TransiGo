@@ -3,6 +3,7 @@ package com.transigo.app.data.repository
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.transigo.app.core.service.NotificationService
 import com.transigo.app.data.model.Booking
 import com.transigo.app.data.model.BookingStatus
@@ -46,7 +47,20 @@ class AdminBookingRepository @Inject constructor(
             
             emit(Result.success(bookings))
         } catch (e: Exception) {
-            emit(Result.failure(e))
+            if (e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.FAILED_PRECONDITION) {
+                val fallback = bookingsCollection
+                    .whereEqualTo("status", status.name)
+                    .get()
+                    .await()
+
+                val bookings = fallback.documents.mapNotNull { doc ->
+                    doc.toObject(Booking::class.java)?.copy(id = doc.id)
+                }
+                val sorted = bookings.sortedByDescending { it.requestedAt?.toDate() }
+                emit(Result.success(sorted))
+            } else {
+                emit(Result.failure(e))
+            }
         }
     }
 

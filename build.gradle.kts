@@ -4,5 +4,7 @@ plugins {
     id("com.android.library") version "7.4.2" apply false
     id("org.jetbrains.kotlin.android") version "1.8.20" apply false
     id("com.google.gms.google-services") version "4.3.15" apply false
-    id("dagger.hilt.android.plugin") version "2.45" apply false
+    id("com.google.dagger.hilt.android") version "2.45" apply false
 }
+
+// Java toolchain is configured via gradle.properties (org.gradle.java.home)

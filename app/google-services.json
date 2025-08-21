@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "000000000000",
-    "project_id": "transigo-placeholder",
-    "storage_bucket": "transigo-placeholder.appspot.com"
+    "project_number": "460944874704",
+    "project_id": "taxi-transigo",
+    "storage_bucket": "taxi-transigo.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:000000000000:android:aaaaaaaaaaaaaaaa",
+        "mobilesdk_app_id": "1:460944874704:android:92d715d0bb9b39eafb92d5",
         "android_client_info": {
           "package_name": "com.transigo.app"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "000000000000-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          "current_key": "AIzaSyAA8t3skTEB_JEQZyYGJS-VHFlgd_Ngv4A"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "000000000000-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

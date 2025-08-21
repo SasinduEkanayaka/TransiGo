@@ -3,7 +3,7 @@ package com.transigo.app.admin
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.transigo.app.data.repository.AdminDashboardRepository
-import com.transigo.app.data.repository.DashboardStats
+import com.transigo.app.data.model.DashboardStats
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

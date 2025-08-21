@@ -1,79 +1,85 @@
 package com.transigo.app.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.transigo.app.data.model.Driver
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.channels.awaitClose
 
-/**
- * Repository for driver operations.
- * Handles driver management and queries.
- */
 @Singleton
 class DriverRepository @Inject constructor(
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val firestore: FirebaseFirestore
 ) {
     private val driversCollection = firestore.collection("drivers")
 
-    /**
-     * Get all drivers
-     */
-    fun getAllDrivers(): Flow<Result<List<Driver>>> = flow {
-        try {
-            val snapshot = driversCollection.get().await()
-            val drivers = snapshot.documents.mapNotNull { doc ->
-                doc.toObject(Driver::class.java)?.copy(id = doc.id)
+    fun getDriversFlow(): Flow<List<Driver>> = callbackFlow {
+        val listenerRegistration = driversCollection
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val drivers = snapshot?.toObjects(Driver::class.java) ?: emptyList()
+                trySend(drivers)
             }
-            emit(Result.success(drivers))
-        } catch (e: Exception) {
-            emit(Result.failure(e))
-        }
+        awaitClose { listenerRegistration.remove() }
     }
 
-    /**
-     * Get active drivers
-     */
-    fun getActiveDrivers(): Flow<Result<List<Driver>>> = flow {
-        try {
-            val snapshot = driversCollection
-                .whereEqualTo("isActive", true)
-                .get()
-                .await()
-            
-            val drivers = snapshot.documents.mapNotNull { doc ->
-                doc.toObject(Driver::class.java)?.copy(id = doc.id)
-            }
-            emit(Result.success(drivers))
-        } catch (e: Exception) {
-            emit(Result.failure(e))
-        }
+    fun getActiveDriversFlow(): Flow<List<Driver>> = getDriversFlow().map { drivers ->
+        drivers.filter { it.isActive }
     }
 
-    /**
-     * Get driver by ID
-     */
-    suspend fun getDriverById(driverId: String): Result<Driver?> {
+    suspend fun addDriver(driver: Driver): Result<String> {
         return try {
-            val document = driversCollection.document(driverId).get().await()
-            val driver = document.toObject(Driver::class.java)?.copy(id = document.id)
-            Result.success(driver)
+            val docRef = driversCollection.add(
+                driver.copy(
+                    createdAt = com.google.firebase.Timestamp.now(),
+                    updatedAt = com.google.firebase.Timestamp.now()
+                )
+            ).await()
+            Result.success(docRef.id)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    /**
-     * Update driver status
-     */
-    suspend fun updateDriverStatus(driverId: String, isActive: Boolean): Result<Unit> {
+    suspend fun updateDriver(driverId: String, driver: Driver): Result<Unit> {
         return try {
-            driversCollection.document(driverId)
-                .update("isActive", isActive)
-                .await()
+            val driverMap = mapOf(
+                "fullName" to driver.fullName,
+                "phoneNumber" to driver.phoneNumber,
+                "vehicleType" to driver.vehicleType.toString(),
+                "vehicleNumber" to driver.vehicleNumber,
+                "isActive" to driver.isActive,
+                "updatedAt" to com.google.firebase.Timestamp.now()
+            )
+            driversCollection.document(driverId).update(driverMap).await()
             Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun deleteDriver(driverId: String): Result<Unit> {
+        return try {
+            driversCollection.document(driverId).delete().await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getDriver(driverId: String): Result<Driver?> {
+        return try {
+            val snapshot = driversCollection.document(driverId).get().await()
+            val driver = snapshot.toObject(Driver::class.java)
+            Result.success(driver)
         } catch (e: Exception) {
             Result.failure(e)
         }

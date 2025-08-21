@@ -17,7 +17,7 @@
     <string name="booking_form_title">Book Your Transfer</string>
     <string name="booking_pickup_location">Pickup Location</string>
     <string name="booking_dropoff_location">Drop-off Location</string>
-    <string name="booking_date_time">Date & Time</string>
+    <string name="booking_date_time">Date &amp; Time</string>
     <string name="booking_passengers">Number of Passengers</string>
     <string name="booking_special_requests">Special Requests</string>
     <string name="booking_submit">Book Now</string>
@@ -56,4 +56,15 @@
     <string name="auth_no_account">Don\'t have an account?</string>
     <string name="auth_remember_password">Remember your password?</string>
     <string name="auth_logout">Logout</string>
+
+    <!-- Onboarding -->
+    <string name="onb_title_1">Plan your ride in seconds</string>
+    <string name="onb_desc_1">Book airport and hotel transfers with a few taps. Simple and fast.</string>
+    <string name="onb_title_2">Real-time updates</string>
+    <string name="onb_desc_2">Track bookings, drivers, and notifications as they happen.</string>
+    <string name="onb_title_3">Reliable and safe</string>
+    <string name="onb_desc_3">Verified drivers and secure payments for peace of mind.</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+    <string name="get_started">Get started</string>
 </resources>

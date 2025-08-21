@@ -10,7 +10,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class FcmTokenService @Inject constructor(
-    private val firebaseMessaging: FirebaseMessaging = FirebaseMessaging.getInstance()
+    private val firebaseMessaging: FirebaseMessaging
 ) {
 
     /**

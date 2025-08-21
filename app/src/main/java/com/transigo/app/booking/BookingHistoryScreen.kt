@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.transigo.app.auth.AuthViewModel
@@ -32,7 +33,7 @@ import java.util.*
 fun BookingHistoryScreen(
     navController: NavController,
     bookingViewModel: BookingViewModel = viewModel(),
-    authViewModel: AuthViewModel = viewModel()
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val state by bookingViewModel.state.collectAsState()
     val user by authViewModel.user.collectAsState()
@@ -185,6 +186,8 @@ fun BookingCard(
                 Surface(
                     color = when (booking.status) {
                         BookingStatus.REQUESTED -> MaterialTheme.colorScheme.primary
+                        BookingStatus.APPROVED -> MaterialTheme.colorScheme.secondaryContainer
+                        BookingStatus.REJECTED -> MaterialTheme.colorScheme.errorContainer
                         BookingStatus.CONFIRMED -> MaterialTheme.colorScheme.tertiary
                         BookingStatus.IN_PROGRESS -> MaterialTheme.colorScheme.secondary
                         BookingStatus.COMPLETED -> MaterialTheme.colorScheme.primaryContainer
@@ -196,6 +199,8 @@ fun BookingCard(
                         text = booking.status.name,
                         color = when (booking.status) {
                             BookingStatus.COMPLETED -> MaterialTheme.colorScheme.onPrimaryContainer
+                            BookingStatus.APPROVED -> MaterialTheme.colorScheme.onSecondaryContainer
+                            BookingStatus.REJECTED -> MaterialTheme.colorScheme.onErrorContainer
                             else -> MaterialTheme.colorScheme.onPrimary
                         },
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
@@ -335,7 +340,7 @@ fun RatingBottomSheet(
     onDismiss: () -> Unit,
     onSubmitRating: (stars: Int, comment: String) -> Unit
 ) {
-    var selectedStars by remember { mutableIntStateOf(0) }
+    var selectedStars by remember { mutableStateOf(0) }
     var comment by remember { mutableStateOf("") }
     val bottomSheetState = rememberModalBottomSheetState()
 

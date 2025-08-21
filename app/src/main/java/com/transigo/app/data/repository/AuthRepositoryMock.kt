@@ -12,7 +12,7 @@ import java.util.*
  * Mock AuthRepository for demonstration purposes.
  * This will be replaced with Firebase implementation later.
  */
-class AuthRepository {
+class AuthRepositoryMock {
     
     // Mock storage for demo purposes
     private val users = mutableMapOf<String, User>()
