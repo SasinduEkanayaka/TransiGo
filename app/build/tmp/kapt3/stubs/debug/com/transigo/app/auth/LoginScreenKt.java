@@ -4,8 +4,8 @@ package com.transigo.app.auth;
 public final class LoginScreenKt {
     
     /**
-     * Login screen allowing users to authenticate with email and password.
-     * Provides navigation to registration and password reset screens.
+     * Modern login screen with enhanced UI/UX design.
+     * Features gradient backgrounds, animations, and contemporary styling.
      */
     @kotlin.OptIn(markerClass = {androidx.compose.material3.ExperimentalMaterial3Api.class})
     @androidx.compose.runtime.Composable

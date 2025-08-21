@@ -23,6 +23,9 @@ import com.transigo.app.admin.AdminBookingsScreen
 import com.transigo.app.admin.AdminDriversScreen
 import com.transigo.app.HomeScreen
 import com.transigo.app.data.model.UserType
+import com.transigo.app.onboarding.OnboardingViewModel
+import com.transigo.app.onboarding.SplashScreen
+import com.transigo.app.onboarding.OnboardingScreen
 
 /**
  * Main navigation graph for the TransiGo app.
@@ -34,21 +37,22 @@ fun NavGraph(
     navController: NavHostController = rememberNavController(),
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
-    // Observe the current user state to determine start destination
-    val user by authViewModel.user.collectAsState()
-    
-    // Determine start destination based on authentication state and user role
-    val currentUser = user
-    val startDestination = when {
-        currentUser == null -> NavigationRoutes.AUTH
-        currentUser.userType == UserType.ADMIN -> NavigationRoutes.ADMIN_DASHBOARD
-        else -> NavigationRoutes.HOME
-    }
+    // Navigation starts at splash which decides between onboarding and auth
 
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = NavigationRoutes.SPLASH
     ) {
+        // Splash decides where to go next based on onboarding state
+        composable(NavigationRoutes.SPLASH) {
+            SplashScreen(navController = navController)
+        }
+
+        // Onboarding flow
+        composable(NavigationRoutes.ONBOARDING) {
+            val vm: OnboardingViewModel = hiltViewModel()
+            OnboardingScreen(navController = navController, viewModel = vm)
+        }
         // Authentication flow screens
         composable(NavigationRoutes.AUTH) {
             AuthScreen(navController = navController)

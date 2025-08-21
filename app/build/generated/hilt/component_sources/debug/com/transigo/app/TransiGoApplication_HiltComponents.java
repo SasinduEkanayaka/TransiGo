@@ -6,6 +6,7 @@ import com.transigo.app.admin.DriverViewModel_HiltModules;
 import com.transigo.app.auth.AuthViewModel_HiltModules;
 import com.transigo.app.core.di.FirebaseModule;
 import com.transigo.app.core.service.TransiGoFcmService_GeneratedInjector;
+import com.transigo.app.onboarding.OnboardingViewModel_HiltModules;
 import com.transigo.app.profile.ProfileViewModel_HiltModules;
 import dagger.Binds;
 import dagger.Component;
@@ -154,6 +155,7 @@ public final class TransiGoApplication_HiltComponents {
           AuthViewModel_HiltModules.KeyModule.class,
           DriverViewModel_HiltModules.KeyModule.class,
           HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class,
+          OnboardingViewModel_HiltModules.KeyModule.class,
           ProfileViewModel_HiltModules.KeyModule.class,
           ActivityCBuilderModule.class,
           ViewModelCBuilderModule.class
@@ -197,6 +199,7 @@ public final class TransiGoApplication_HiltComponents {
           AuthViewModel_HiltModules.BindsModule.class,
           DriverViewModel_HiltModules.BindsModule.class,
           HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
+          OnboardingViewModel_HiltModules.BindsModule.class,
           ProfileViewModel_HiltModules.BindsModule.class
       }
   )

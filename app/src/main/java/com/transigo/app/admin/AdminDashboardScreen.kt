@@ -1,9 +1,18 @@
 package com.transigo.app.admin
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Dashboard
@@ -15,10 +24,15 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Pending
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +54,9 @@ fun AdminDashboardScreen(
     val dashboardStats by dashboardViewModel.dashboardStats.collectAsState()
     val isLoading by dashboardViewModel.isLoading.collectAsState()
     val errorMessage by dashboardViewModel.errorMessage.collectAsState()
+    var isVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) { isVisible = true }
 
     // Show error message if any
     LaunchedEffect(errorMessage) {
@@ -48,195 +65,105 @@ fun AdminDashboardScreen(
         }
     }
     
-    Column(
+    // Background gradient
+    val backgroundGradient = Brush.verticalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+            MaterialTheme.colorScheme.secondary.copy(alpha = 0.05f),
+            MaterialTheme.colorScheme.surface
+        )
+    )
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .background(backgroundGradient)
     ) {
-        // Top App Bar with logout
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxSize()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { 
-                    // Navigate to home instead of back for admin dashboard
-                    navController.navigate(NavigationRoutes.HOME) {
-                        popUpTo(NavigationRoutes.ADMIN_DASHBOARD) { inclusive = true }
-                    }
-                }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                }
-                Text(
-                    text = "Admin Dashboard",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-            
-            // Refresh and Logout buttons
-            Row {
-                IconButton(onClick = { 
-                    dashboardViewModel.refreshStats()
-                }) {
-                    Icon(Icons.Default.Refresh, contentDescription = "Refresh")
-                }
-                
-                IconButton(onClick = { 
-                    authViewModel.logout()
-                    navController.navigate(NavigationRoutes.AUTH) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                }) {
-                    Icon(Icons.Default.ExitToApp, contentDescription = "Logout")
-                }
-            }
-        }
-
-        // Dashboard content
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            // Header
+            AnimatedVisibility(
+                visible = isVisible,
+                enter = slideInVertically(initialOffsetY = { -it }, animationSpec = tween(800, easing = FastOutSlowInEasing)) +
+                        fadeIn(animationSpec = tween(800))
             ) {
-                Icon(
-                    imageVector = Icons.Default.Dashboard,
-                    contentDescription = "Dashboard",
-                    modifier = Modifier.size(64.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text(
-                    text = "Admin Dashboard",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = "Welcome, ${user?.name ?: "Admin"}",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 14.sp
+                AdminHeader(
+                    title = "Admin Dashboard",
+                    subtitle = "Welcome, ${user?.name ?: "Admin"}",
+                    onBack = {
+                        navController.navigate(NavigationRoutes.HOME) {
+                            popUpTo(NavigationRoutes.ADMIN_DASHBOARD) { inclusive = true }
+                        }
+                    },
+                    onRefresh = { dashboardViewModel.refreshStats() },
+                    onLogout = {
+                        authViewModel.logout()
+                        navController.navigate(NavigationRoutes.AUTH) { popUpTo(0) { inclusive = true } }
+                    }
                 )
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-        // Error message
-        errorMessage?.let { error ->
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer
-                )
-            ) {
-                Row(
+            // KPI Cards
+            if (isLoading) {
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .height(200.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "Error: $error",
-                        color = MaterialTheme.colorScheme.onErrorContainer,
-                        fontSize = 12.sp,
-                        modifier = Modifier.weight(1f)
-                    )
-                    TextButton(
-                        onClick = { dashboardViewModel.clearError() }
-                    ) {
-                        Text("Dismiss")
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        CircularProgressIndicator()
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Loading dashboard stats...", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.height(300.dp)
+                ) {
+                    items(getKpiItems(dashboardStats)) { kpi ->
+                        AdminKpiCard(
+                            title = kpi.title,
+                            value = kpi.value.toString(),
+                            icon = kpi.icon
+                        )
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
-        }
 
-        // KPI Cards
-        if (isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    CircularProgressIndicator()
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Loading dashboard stats...")
-                }
-            }
-        } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(0.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.height(280.dp)
-            ) {
-                items(getKpiItems(dashboardStats)) { kpi ->
-                    KpiCard(
-                        title = kpi.title,
-                        value = kpi.value.toString(),
-                        icon = kpi.icon,
-                        modifier = Modifier.height(130.dp)
-                    )
-                }
-            }
-        }
+            Spacer(modifier = Modifier.height(20.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Admin action buttons
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            ElevatedButton(
-                onClick = { navController.navigate(NavigationRoutes.ADMIN_BOOKINGS) },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp)
+            // Quick actions
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.BookOnline,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(18.dp)
-                        .padding(end = 4.dp)
+                AdminQuickActionCard(
+                    title = "Bookings",
+                    subtitle = "Review and manage",
+                    icon = Icons.Default.BookOnline,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    onClick = { navController.navigate(NavigationRoutes.ADMIN_BOOKINGS) },
+                    modifier = Modifier.weight(1f)
                 )
-                Text("Bookings", fontSize = 14.sp)
-            }
-
-            ElevatedButton(
-                onClick = { navController.navigate(NavigationRoutes.ADMIN_DRIVERS) },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.DirectionsCar,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(18.dp)
-                        .padding(end = 4.dp)
+                AdminQuickActionCard(
+                    title = "Drivers",
+                    subtitle = "Roster and status",
+                    icon = Icons.Default.DirectionsCar,
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    onClick = { navController.navigate(NavigationRoutes.ADMIN_DRIVERS) },
+                    modifier = Modifier.weight(1f)
                 )
-                Text("Drivers", fontSize = 14.sp)
             }
         }
     }
@@ -249,56 +176,154 @@ data class KpiItem(
 )
 
 @Composable
-fun KpiCard(
+fun AdminKpiCard(
     title: String,
     value: String,
     icon: ImageVector,
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
+        modifier = modifier
+            .height(140.dp),
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = title,
-                modifier = Modifier.size(32.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                        shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(22.dp))
+            }
             Text(
                 text = value,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.ExtraBold
             )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
             Text(
                 text = title,
-                fontSize = 11.sp,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                lineHeight = 12.sp
+                textAlign = TextAlign.Center
             )
         }
     }
 }
 
-private fun getKpiItems(stats: com.transigo.app.data.repository.DashboardStats): List<KpiItem> {
+@Composable
+private fun AdminHeader(
+    title: String,
+    subtitle: String,
+    onBack: () -> Unit,
+    onRefresh: () -> Unit,
+    onLogout: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f))
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
+                ) {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.primary)
+                    }
+                }
+                Column(modifier = Modifier.padding(start = 12.dp)) {
+                    Text(title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                    Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Surface(shape = CircleShape, color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f)) {
+                    IconButton(onClick = onRefresh) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = MaterialTheme.colorScheme.secondary)
+                    }
+                }
+                Surface(shape = CircleShape, color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.8f)) {
+                    IconButton(onClick = onLogout) {
+                        Icon(Icons.Default.ExitToApp, contentDescription = "Logout", tint = MaterialTheme.colorScheme.error)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AdminQuickActionCard(
+    title: String,
+    subtitle: String,
+    icon: ImageVector,
+    containerColor: Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .height(110.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            containerColor.copy(alpha = 0.15f),
+                            containerColor.copy(alpha = 0.06f)
+                        )
+                    )
+                )
+                .padding(16.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .background(color = containerColor, shape = CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(22.dp))
+                }
+                Spacer(Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = containerColor)
+                    Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                Icon(Icons.Default.ArrowForward, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp))
+            }
+        }
+    }
+}
+
+private fun getKpiItems(stats: com.transigo.app.data.model.DashboardStats): List<KpiItem> {
     return listOf(
         KpiItem(
             title = "Total Bookings",

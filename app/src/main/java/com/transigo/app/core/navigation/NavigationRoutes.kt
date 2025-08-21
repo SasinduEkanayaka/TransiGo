@@ -1,6 +1,8 @@
 package com.transigo.app.core.navigation
 
 object NavigationRoutes {
+    const val SPLASH = "splash"
+    const val ONBOARDING = "onboarding"
     const val AUTH = "auth"
     const val HOME = "home"
     const val BOOKING_FORM = "bookingForm"

@@ -29,6 +29,8 @@ import hilt_aggregated_deps._com_transigo_app_auth_AuthViewModel_HiltModules_Bin
 import hilt_aggregated_deps._com_transigo_app_auth_AuthViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_transigo_app_core_di_FirebaseModule;
 import hilt_aggregated_deps._com_transigo_app_core_service_TransiGoFcmService_GeneratedInjector;
+import hilt_aggregated_deps._com_transigo_app_onboarding_OnboardingViewModel_HiltModules_BindsModule;
+import hilt_aggregated_deps._com_transigo_app_onboarding_OnboardingViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_transigo_app_profile_ProfileViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_transigo_app_profile_ProfileViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._dagger_hilt_android_flags_FragmentGetContextFix_FragmentGetContextFixEntryPoint;
@@ -82,6 +84,8 @@ import hilt_aggregated_deps._dagger_hilt_android_internal_modules_HiltWrapper_Ac
         _com_transigo_app_auth_AuthViewModel_HiltModules_KeyModule.class,
         _com_transigo_app_core_di_FirebaseModule.class,
         _com_transigo_app_core_service_TransiGoFcmService_GeneratedInjector.class,
+        _com_transigo_app_onboarding_OnboardingViewModel_HiltModules_BindsModule.class,
+        _com_transigo_app_onboarding_OnboardingViewModel_HiltModules_KeyModule.class,
         _com_transigo_app_profile_ProfileViewModel_HiltModules_BindsModule.class,
         _com_transigo_app_profile_ProfileViewModel_HiltModules_KeyModule.class,
         _dagger_hilt_android_flags_FragmentGetContextFix_FragmentGetContextFixEntryPoint.class,

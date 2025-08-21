@@ -1,16 +1,24 @@
 package com.transigo.app.admin
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,57 +48,103 @@ fun AdminBookingsScreen(
     var showDriverDialog by remember { mutableStateOf(false) }
     var selectedBookingForDriver by remember { mutableStateOf<Booking?>(null) }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        // Top App Bar
-        CenterAlignedTopAppBar(
-            title = { Text("Manage Bookings") },
-            navigationIcon = {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+    // Background gradient
+    val backgroundGradient = Brush.verticalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+            MaterialTheme.colorScheme.secondary.copy(alpha = 0.05f),
+            MaterialTheme.colorScheme.surface
+        )
+    )
+
+    var isVisible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { isVisible = true }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundGradient)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp)
+        ) {
+            AnimatedVisibility(
+                visible = isVisible,
+                enter = slideInVertically(initialOffsetY = { -it }, animationSpec = tween(800, easing = FastOutSlowInEasing)) +
+                        fadeIn(animationSpec = tween(800))
+            ) {
+                // Header card
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f))
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Surface(shape = CircleShape, color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)) {
+                                IconButton(onClick = { navController.popBackStack() }) {
+                                    Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.primary)
+                                }
+                            }
+                            Column(modifier = Modifier.padding(start = 12.dp)) {
+                                Text("Manage Bookings", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                                Text("Approve, assign drivers, and complete rides", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                        }
+                        IconButton(onClick = { viewModel.loadBookings() }) {
+                            Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                        }
+                    }
                 }
             }
-        )
 
-        // Filter Tabs
-        FilterTabs(
-            currentFilter = currentFilter,
-            onFilterChanged = viewModel::setFilter
-        )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // Content
-        Box(modifier = Modifier.fillMaxSize()) {
-            when {
-                isLoading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
+            // Filter Tabs
+            FilterTabs(
+                currentFilter = currentFilter,
+                onFilterChanged = viewModel::setFilter
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Content
+            Box(modifier = Modifier.fillMaxSize()) {
+                when {
+                    isLoading -> {
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
                     }
-                }
-                error != null -> {
-                    error?.let { errMsg ->
-                        ErrorContent(
-                            error = errMsg,
-                            onRetry = viewModel::loadBookings,
-                            onDismiss = viewModel::clearError
+                    error != null -> {
+                        error?.let { errMsg ->
+                            ErrorContent(
+                                error = errMsg,
+                                onRetry = viewModel::loadBookings,
+                                onDismiss = viewModel::clearError
+                            )
+                        }
+                    }
+                    bookings.isEmpty() -> {
+                        EmptyStateContent(currentFilter)
+                    }
+                    else -> {
+                        BookingsList(
+                            bookings = bookings,
+                            currentFilter = currentFilter,
+                            actionInProgress = actionInProgress,
+                            viewModel = viewModel,
+                            onAssignDriver = { booking ->
+                                selectedBookingForDriver = booking
+                                showDriverDialog = true
+                            }
                         )
                     }
-                }
-                bookings.isEmpty() -> {
-                    EmptyStateContent(currentFilter)
-                }
-                else -> {
-                    BookingsList(
-                        bookings = bookings,
-                        currentFilter = currentFilter,
-                        actionInProgress = actionInProgress,
-                        viewModel = viewModel,
-                        onAssignDriver = { booking ->
-                            selectedBookingForDriver = booking
-                            showDriverDialog = true
-                        }
-                    )
                 }
             }
         }
@@ -127,7 +181,9 @@ fun FilterTabs(
 
     ScrollableTabRow(
         selectedTabIndex = filters.indexOf(currentFilter),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        edgePadding = 12.dp,
+        containerColor = Color.Transparent
     ) {
         filters.forEach { filter ->
             Tab(
@@ -183,7 +239,9 @@ fun BookingCard(
     
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)

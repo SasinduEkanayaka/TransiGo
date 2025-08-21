@@ -3968,6 +3968,7 @@ string fallback_menu_item_open_in_browser
 string fallback_menu_item_share_link
 string fcm_fallback_notification_channel_label
 string gcm_defaultSenderId
+string get_started
 string google_api_key
 string google_app_id
 string google_crash_reporting_api_key
@@ -4087,9 +4088,16 @@ string nav_history
 string nav_home
 string nav_profile
 string navigation_menu
+string next
 string not_selected
 string off
 string on
+string onb_desc_1
+string onb_desc_2
+string onb_desc_3
+string onb_title_1
+string onb_title_2
+string onb_title_3
 string password_toggle_content_description
 string path_password_eye
 string path_password_eye_mask_strike_through
@@ -4106,6 +4114,7 @@ string searchview_navigation_content_description
 string selected
 string side_sheet_accessibility_pane_title
 string side_sheet_behavior
+string skip
 string snackbar_dismiss
 string status_bar_notification_info_overflow
 string suggestions_available

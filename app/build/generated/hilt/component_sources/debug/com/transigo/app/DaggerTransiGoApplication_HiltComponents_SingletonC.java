@@ -41,6 +41,8 @@ import com.transigo.app.data.repository.AdminDashboardRepository;
 import com.transigo.app.data.repository.AuthRepository;
 import com.transigo.app.data.repository.DriverRepository;
 import com.transigo.app.data.repository.ProfileRepository;
+import com.transigo.app.onboarding.OnboardingViewModel;
+import com.transigo.app.onboarding.OnboardingViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.transigo.app.profile.ProfileViewModel;
 import com.transigo.app.profile.ProfileViewModel_HiltModules_KeyModule_ProvideFactory;
 import dagger.hilt.android.ActivityRetainedLifecycle;
@@ -57,6 +59,7 @@ import dagger.hilt.android.internal.lifecycle.DefaultViewModelFactories;
 import dagger.hilt.android.internal.lifecycle.DefaultViewModelFactories_InternalFactoryFactory_Factory;
 import dagger.hilt.android.internal.managers.ActivityRetainedComponentManager_LifecycleModule_ProvideActivityRetainedLifecycleFactory;
 import dagger.hilt.android.internal.modules.ApplicationContextModule;
+import dagger.hilt.android.internal.modules.ApplicationContextModule_ProvideContextFactory;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.DoubleCheck;
 import dagger.internal.Preconditions;
@@ -79,20 +82,14 @@ public final class DaggerTransiGoApplication_HiltComponents_SingletonC {
     return new Builder();
   }
 
-  public static TransiGoApplication_HiltComponents.SingletonC create() {
-    return new Builder().build();
-  }
-
   public static final class Builder {
+    private ApplicationContextModule applicationContextModule;
+
     private Builder() {
     }
 
-    /**
-     * @deprecated This module is declared, but an instance is not used in the component. This method is a no-op. For more, see https://dagger.dev/unused-modules.
-     */
-    @Deprecated
     public Builder applicationContextModule(ApplicationContextModule applicationContextModule) {
-      Preconditions.checkNotNull(applicationContextModule);
+      this.applicationContextModule = Preconditions.checkNotNull(applicationContextModule);
       return this;
     }
 
@@ -116,7 +113,8 @@ public final class DaggerTransiGoApplication_HiltComponents_SingletonC {
     }
 
     public TransiGoApplication_HiltComponents.SingletonC build() {
-      return new SingletonCImpl();
+      Preconditions.checkBuilderRequirement(applicationContextModule, ApplicationContextModule.class);
+      return new SingletonCImpl(applicationContextModule);
     }
   }
 
@@ -406,7 +404,7 @@ public final class DaggerTransiGoApplication_HiltComponents_SingletonC {
 
     @Override
     public Set<String> getViewModelKeys() {
-      return ImmutableSet.<String>of(AdminBookingViewModel_HiltModules_KeyModule_ProvideFactory.provide(), AdminDashboardViewModel_HiltModules_KeyModule_ProvideFactory.provide(), AuthViewModel_HiltModules_KeyModule_ProvideFactory.provide(), DriverViewModel_HiltModules_KeyModule_ProvideFactory.provide(), ProfileViewModel_HiltModules_KeyModule_ProvideFactory.provide());
+      return ImmutableSet.<String>of(AdminBookingViewModel_HiltModules_KeyModule_ProvideFactory.provide(), AdminDashboardViewModel_HiltModules_KeyModule_ProvideFactory.provide(), AuthViewModel_HiltModules_KeyModule_ProvideFactory.provide(), DriverViewModel_HiltModules_KeyModule_ProvideFactory.provide(), OnboardingViewModel_HiltModules_KeyModule_ProvideFactory.provide(), ProfileViewModel_HiltModules_KeyModule_ProvideFactory.provide());
     }
 
     @Override
@@ -446,6 +444,8 @@ public final class DaggerTransiGoApplication_HiltComponents_SingletonC {
 
     private Provider<DriverViewModel> driverViewModelProvider;
 
+    private Provider<OnboardingViewModel> onboardingViewModelProvider;
+
     private Provider<ProfileViewModel> profileViewModelProvider;
 
     private ViewModelCImpl(SingletonCImpl singletonCImpl,
@@ -465,12 +465,13 @@ public final class DaggerTransiGoApplication_HiltComponents_SingletonC {
       this.adminDashboardViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 1);
       this.authViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 2);
       this.driverViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 3);
-      this.profileViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 4);
+      this.onboardingViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 4);
+      this.profileViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 5);
     }
 
     @Override
     public Map<String, Provider<ViewModel>> getHiltViewModelMap() {
-      return ImmutableMap.<String, Provider<ViewModel>>of("com.transigo.app.admin.AdminBookingViewModel", ((Provider) adminBookingViewModelProvider), "com.transigo.app.admin.AdminDashboardViewModel", ((Provider) adminDashboardViewModelProvider), "com.transigo.app.auth.AuthViewModel", ((Provider) authViewModelProvider), "com.transigo.app.admin.DriverViewModel", ((Provider) driverViewModelProvider), "com.transigo.app.profile.ProfileViewModel", ((Provider) profileViewModelProvider));
+      return ImmutableMap.<String, Provider<ViewModel>>builderWithExpectedSize(6).put("com.transigo.app.admin.AdminBookingViewModel", ((Provider) adminBookingViewModelProvider)).put("com.transigo.app.admin.AdminDashboardViewModel", ((Provider) adminDashboardViewModelProvider)).put("com.transigo.app.auth.AuthViewModel", ((Provider) authViewModelProvider)).put("com.transigo.app.admin.DriverViewModel", ((Provider) driverViewModelProvider)).put("com.transigo.app.onboarding.OnboardingViewModel", ((Provider) onboardingViewModelProvider)).put("com.transigo.app.profile.ProfileViewModel", ((Provider) profileViewModelProvider)).build();
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -506,7 +507,10 @@ public final class DaggerTransiGoApplication_HiltComponents_SingletonC {
           case 3: // com.transigo.app.admin.DriverViewModel 
           return (T) new DriverViewModel(singletonCImpl.provideDriverRepositoryProvider.get());
 
-          case 4: // com.transigo.app.profile.ProfileViewModel 
+          case 4: // com.transigo.app.onboarding.OnboardingViewModel 
+          return (T) new OnboardingViewModel(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 5: // com.transigo.app.profile.ProfileViewModel 
           return (T) new ProfileViewModel(singletonCImpl.provideProfileRepositoryProvider.get(), singletonCImpl.provideFcmTokenServiceProvider.get());
 
           default: throw new AssertionError(id);
@@ -595,6 +599,8 @@ public final class DaggerTransiGoApplication_HiltComponents_SingletonC {
   }
 
   private static final class SingletonCImpl extends TransiGoApplication_HiltComponents.SingletonC {
+    private final ApplicationContextModule applicationContextModule;
+
     private final SingletonCImpl singletonCImpl = this;
 
     private Provider<FirebaseFirestore> provideFirebaseFirestoreProvider;
@@ -617,14 +623,14 @@ public final class DaggerTransiGoApplication_HiltComponents_SingletonC {
 
     private Provider<FcmTokenService> provideFcmTokenServiceProvider;
 
-    private SingletonCImpl() {
-
-      initialize();
+    private SingletonCImpl(ApplicationContextModule applicationContextModuleParam) {
+      this.applicationContextModule = applicationContextModuleParam;
+      initialize(applicationContextModuleParam);
 
     }
 
     @SuppressWarnings("unchecked")
-    private void initialize() {
+    private void initialize(final ApplicationContextModule applicationContextModuleParam) {
       this.provideFirebaseFirestoreProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseFirestore>(singletonCImpl, 1));
       this.provideFirebaseAuthProvider = DoubleCheck.provider(new SwitchingProvider<FirebaseAuth>(singletonCImpl, 2));
       this.provideProfileRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<ProfileRepository>(singletonCImpl, 0));

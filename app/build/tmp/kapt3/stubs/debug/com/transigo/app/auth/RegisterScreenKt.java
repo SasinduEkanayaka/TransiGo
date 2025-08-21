@@ -4,8 +4,8 @@ package com.transigo.app.auth;
 public final class RegisterScreenKt {
     
     /**
-     * Registration screen allowing new users to create an account.
-     * Collects full name, email, and password to create a new user profile.
+     * Modern registration screen with enhanced UI/UX design.
+     * Features gradient backgrounds, animations, and contemporary styling.
      */
     @kotlin.OptIn(markerClass = {androidx.compose.material3.ExperimentalMaterial3Api.class})
     @androidx.compose.runtime.Composable

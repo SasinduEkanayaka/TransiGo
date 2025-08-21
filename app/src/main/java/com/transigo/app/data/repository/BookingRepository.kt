@@ -2,8 +2,8 @@ package com.transigo.app.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ServerTimestamp
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.transigo.app.data.model.Booking
 import com.transigo.app.data.model.BookingType
 import com.transigo.app.data.model.RideType
@@ -58,13 +58,28 @@ class BookingRepository(
                 .orderBy("requestedAt", Query.Direction.DESCENDING)
                 .get()
                 .await()
-            
+
             val bookings = querySnapshot.documents.mapNotNull { document ->
                 document.toObject(Booking::class.java)?.copy(id = document.id)
             }
             emit(Result.success(bookings))
         } catch (e: Exception) {
-            emit(Result.failure(e))
+            // Graceful fallback if composite index is missing
+            if (e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.FAILED_PRECONDITION) {
+                val fallbackSnapshot = bookingsCollection
+                    .whereEqualTo("userId", userId)
+                    .get()
+                    .await()
+
+                val bookings = fallbackSnapshot.documents.mapNotNull { document ->
+                    document.toObject(Booking::class.java)?.copy(id = document.id)
+                }
+
+                val sorted = bookings.sortedByDescending { it.requestedAt?.toDate() }
+                emit(Result.success(sorted))
+            } else {
+                emit(Result.failure(e))
+            }
         }
     }
 

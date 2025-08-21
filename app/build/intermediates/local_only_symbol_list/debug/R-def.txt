@@ -107,6 +107,7 @@ string btn_cancel
 string btn_confirm
 string error_occurred
 string gcm_defaultSenderId
+string get_started
 string google_api_key
 string google_app_id
 string google_crash_reporting_api_key
@@ -120,7 +121,15 @@ string nav_bookings
 string nav_history
 string nav_home
 string nav_profile
+string next
+string onb_desc_1
+string onb_desc_2
+string onb_desc_3
+string onb_title_1
+string onb_title_2
+string onb_title_3
 string project_id
+string skip
 style Base.Theme.TransiGo
 style ShapeAppearance.TransiGo.LargeComponent
 style ShapeAppearance.TransiGo.MediumComponent
