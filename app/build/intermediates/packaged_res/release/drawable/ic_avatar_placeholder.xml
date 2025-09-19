@@ -1,0 +1,19 @@
+<!-- Simplified valid avatar placeholder -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- Outer circle as path -->
+    <path
+        android:fillColor="#B2DFDB"
+        android:pathData="M60,0 A60,60 0 1,1 59.99,0 Z"/>
+    <!-- Head -->
+    <path
+        android:fillColor="#00695C"
+        android:pathData="M60,25 a15,15 0 1,1 -0.01,0 Z"/>
+    <!-- Shoulders/body -->
+    <path
+        android:fillColor="#00695C"
+        android:pathData="M30,80 C30,60 90,60 90,80 L90,90 L30,90 Z"/>
+</vector>

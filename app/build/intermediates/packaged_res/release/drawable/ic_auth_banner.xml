@@ -1,0 +1,16 @@
+<!-- Simplified valid VectorDrawable placeholder for auth banner -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="300dp"
+    android:height="200dp"
+    android:viewportWidth="300"
+    android:viewportHeight="200">
+    <!-- Background rectangle -->
+    <path
+        android:fillColor="#B2DFDB"
+        android:pathData="M0,0 L300,0 L300,200 L0,200 Z"/>
+    <!-- Accent bar -->
+    <path
+        android:fillColor="#00695C"
+        android:fillAlpha="0.4"
+        android:pathData="M0,150 L300,120 L300,200 L0,200 Z"/>
+</vector>

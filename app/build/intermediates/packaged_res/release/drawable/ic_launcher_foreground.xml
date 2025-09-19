@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Simple 'T' shape for TransiGo -->
+    <path android:fillColor="#FFFFFF" android:pathData="M28,28 H80 V38 H60 V80 H48 V38 H28 Z"/>
+</vector>

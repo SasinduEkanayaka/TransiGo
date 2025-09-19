@@ -1,0 +1,15 @@
+<!-- Simplified banner vector using only valid path elements -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="400dp"
+    android:height="200dp"
+    android:viewportWidth="400"
+    android:viewportHeight="200">
+    <!-- Background -->
+    <path android:fillColor="#E0F2F1" android:pathData="M0,0H400V200H0Z"/>
+    <!-- Skyline silhouette -->
+    <path android:fillColor="#00695C" android:fillAlpha="0.25"
+        android:pathData="M0,130 L30,130 30,90 70,90 70,110 110,110 110,70 150,70 150,100 190,100 190,80 230,80 230,120 270,120 270,95 310,95 310,115 350,115 350,105 400,105 400,200 0,200 Z"/>
+    <!-- Accent diagonal -->
+    <path android:fillColor="#4DB6AC" android:fillAlpha="0.35"
+        android:pathData="M0,160 L400,130 400,200 0,200 Z"/>
+</vector>

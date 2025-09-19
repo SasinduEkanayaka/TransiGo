@@ -1,27 +1,19 @@
 [
     {
-        "merged": "com.transigo.app-merged_res-75:/xml_backup_rules.xml.flat",
-        "source": "com.transigo.app-main-77:/xml/backup_rules.xml"
-    },
-    {
         "merged": "com.transigo.app-merged_res-75:/drawable_ic_notification.xml.flat",
         "source": "com.transigo.app-main-77:/drawable/ic_notification.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-75:/drawable_on2.jpg.flat",
+        "source": "com.transigo.app-main-77:/drawable/on2.jpg"
     },
     {
         "merged": "com.transigo.app-merged_res-75:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
         "source": "com.transigo.app-main-77:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "com.transigo.app-merged_res-75:/drawable_ic_route.xml.flat",
-        "source": "com.transigo.app-main-77:/drawable/ic_route.xml"
-    },
-    {
-        "merged": "com.transigo.app-merged_res-75:/drawable_ic_dropoff_location.xml.flat",
-        "source": "com.transigo.app-main-77:/drawable/ic_dropoff_location.xml"
-    },
-    {
-        "merged": "com.transigo.app-merged_res-75:/drawable_ic_avatar_placeholder.xml.flat",
-        "source": "com.transigo.app-main-77:/drawable/ic_avatar_placeholder.xml"
+        "merged": "com.transigo.app-merged_res-75:/drawable_onboarding_bg_2.xml.flat",
+        "source": "com.transigo.app-main-77:/drawable/onboarding_bg_2.xml"
     },
     {
         "merged": "com.transigo.app-merged_res-75:/drawable_ic_booking_ticket.xml.flat",
@@ -36,8 +28,64 @@
         "source": "com.transigo.app-main-77:/drawable/ic_auth_banner.xml"
     },
     {
+        "merged": "com.transigo.app-merged_res-75:/drawable_onboarding_bg_1.xml.flat",
+        "source": "com.transigo.app-main-77:/drawable/onboarding_bg_1.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-75:/drawable_onboarding_button_bg.xml.flat",
+        "source": "com.transigo.app-main-77:/drawable/onboarding_button_bg.xml"
+    },
+    {
         "merged": "com.transigo.app-merged_res-75:/drawable_ic_banner_transport.xml.flat",
         "source": "com.transigo.app-main-77:/drawable/ic_banner_transport.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-75:/drawable_button_ripple_white.xml.flat",
+        "source": "com.transigo.app-main-77:/drawable/button_ripple_white.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-75:/drawable_particle_effect.xml.flat",
+        "source": "com.transigo.app-main-77:/drawable/particle_effect.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-75:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.transigo.app-main-77:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-75:/drawable_glass_card_bg.xml.flat",
+        "source": "com.transigo.app-main-77:/drawable/glass_card_bg.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-75:/drawable_on3.jpg.flat",
+        "source": "com.transigo.app-main-77:/drawable/on3.jpg"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-75:/xml_backup_rules.xml.flat",
+        "source": "com.transigo.app-main-77:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-75:/drawable_modern_button_gradient.xml.flat",
+        "source": "com.transigo.app-main-77:/drawable/modern_button_gradient.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-75:/drawable_onboarding_bg_3.xml.flat",
+        "source": "com.transigo.app-main-77:/drawable/onboarding_bg_3.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-75:/drawable_on1.jpg.flat",
+        "source": "com.transigo.app-main-77:/drawable/on1.jpg"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-75:/drawable_ic_route.xml.flat",
+        "source": "com.transigo.app-main-77:/drawable/ic_route.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-75:/drawable_ic_dropoff_location.xml.flat",
+        "source": "com.transigo.app-main-77:/drawable/ic_dropoff_location.xml"
+    },
+    {
+        "merged": "com.transigo.app-merged_res-75:/drawable_ic_avatar_placeholder.xml.flat",
+        "source": "com.transigo.app-main-77:/drawable/ic_avatar_placeholder.xml"
     },
     {
         "merged": "com.transigo.app-merged_res-75:/drawable_ic_launcher_foreground.xml.flat",
@@ -48,7 +96,7 @@
         "source": "com.transigo.app-main-77:/xml/data_extraction_rules.xml"
     },
     {
-        "merged": "com.transigo.app-merged_res-75:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "com.transigo.app-main-77:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "com.transigo.app-merged_res-75:/drawable_onboarding_card_bg.xml.flat",
+        "source": "com.transigo.app-main-77:/drawable/onboarding_card_bg.xml"
     }
 ]
