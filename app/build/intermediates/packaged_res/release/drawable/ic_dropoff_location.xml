@@ -1,0 +1,10 @@
+<!-- Valid vector for drop-off flag using path only -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:fillColor="#4DB6AC" android:pathData="M4,2 V22 H6 V2 Z"/>
+    <path android:fillColor="#00695C" android:pathData="M6,2 V12 C10,10 14,14 18,12 V4 C14,6 10,2 6,2 Z"/>
+    <path android:fillColor="#FFFFFF" android:fillAlpha="0.3" android:pathData="M6,4 V10 C8.67,9 11.33,11 14,10 V6 C11.33,7 8.67,5 6,4 Z"/>
+</vector>

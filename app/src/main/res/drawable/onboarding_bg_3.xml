@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Base gradient background -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="160"
+                android:startColor="#a8edea"
+                android:centerColor="#fed6e3"
+                android:endColor="#d299c2"
+                android:type="linear" />
+        </shape>
+    </item>
+    
+    <!-- Diagonal accent -->
+    <item>
+        <rotate android:fromDegrees="45">
+            <shape android:shape="rectangle">
+                <gradient
+                    android:angle="0"
+                    android:startColor="#20ffffff"
+                    android:centerColor="#00ffffff"
+                    android:endColor="#30ffffff"
+                    android:type="linear" />
+            </shape>
+        </rotate>
+    </item>
+    
+    <!-- Top highlight -->
+    <item android:bottom="500dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="270"
+                android:startColor="#30ffffff"
+                android:endColor="#00ffffff"
+                android:type="linear" />
+        </shape>
+    </item>
+</layer-list>
