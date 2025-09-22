@@ -87,6 +87,18 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.45")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
+    // OSMDroid for OpenStreetMap
+    implementation("org.osmdroid:osmdroid-android:6.1.16")
+    
+    // Date and Time pickers
+    implementation("io.github.vanpra.compose-material-dialogs:datetime:0.9.0")
+    
+    // Location services
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    
+    // Permission handling
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+
     // Firebase BOM
     implementation(platform("com.google.firebase:firebase-bom:32.1.1"))
     implementation("com.google.firebase:firebase-auth-ktx")

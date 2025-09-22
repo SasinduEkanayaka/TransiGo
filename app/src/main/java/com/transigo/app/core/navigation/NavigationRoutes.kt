@@ -7,6 +7,7 @@ object NavigationRoutes {
     const val HOME = "home"
     const val BOOKING_FORM = "bookingForm"
     const val BOOKING_HISTORY = "bookingHistory"
+    const val PAYMENT_METHOD = "paymentMethod"
     const val PROFILE = "profile"
     const val ADMIN_DASHBOARD = "adminDashboard"
     const val ADMIN_BOOKINGS = "adminBookings"

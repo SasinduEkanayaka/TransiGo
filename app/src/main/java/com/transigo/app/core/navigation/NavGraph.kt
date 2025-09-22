@@ -16,6 +16,7 @@ import com.transigo.app.auth.RegisterScreen
 import com.transigo.app.auth.ForgotPasswordScreen
 import com.transigo.app.booking.BookingFormScreen
 import com.transigo.app.booking.BookingHistoryScreen
+import com.transigo.app.payment.PaymentMethodScreen
 import com.transigo.app.profile.ProfileScreen
 import com.transigo.app.profile.ProfileViewModel
 import com.transigo.app.admin.AdminDashboardScreen
@@ -81,6 +82,11 @@ fun NavGraph(
         
         composable(NavigationRoutes.BOOKING_HISTORY) {
             BookingHistoryScreen(navController = navController)
+        }
+        
+        composable("${NavigationRoutes.PAYMENT_METHOD}/{selectedMethod}") { backStackEntry ->
+            val selectedMethod = backStackEntry.arguments?.getString("selectedMethod")
+            PaymentMethodScreen(navController = navController, selectedMethod = selectedMethod)
         }
         
         composable(NavigationRoutes.PROFILE) {
