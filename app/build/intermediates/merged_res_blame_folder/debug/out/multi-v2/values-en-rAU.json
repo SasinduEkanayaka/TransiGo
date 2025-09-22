@@ -1,25 +1,8 @@
 {
     "logs": [
         {
-            "outputFile": "com.transigo.app-mergeDebugResources-73:/values-en-rAU/values-en-rAU.xml",
+            "outputFile": "com.transigo.app-mergeDebugResources-75:/values-en-rAU/values-en-rAU.xml",
             "map": [
-                {
-                    "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\7a2d692b16ccfd4374dbb3d3a5177e09\\transformed\\jetified-ui-1.4.3\\res\\values-en-rAU\\values-en-rAU.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "105,197,279,373,472,559,641,730,819,903,968,1032,1110,1192,1265,1342,1408",
-                        "endColumns": "91,81,93,98,86,81,88,88,83,64,63,77,81,72,76,65,120",
-                        "endOffsets": "192,274,368,467,554,636,725,814,898,963,1027,1105,1187,1260,1337,1403,1524"
-                    },
-                    "to": {
-                        "startLines": "40,41,75,76,78,83,84,85,86,87,88,89,90,93,97,98,99",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "3924,4016,7696,7790,7963,8431,8513,8602,8691,8775,8840,8904,8982,9230,9585,9662,9728",
-                        "endColumns": "91,81,93,98,86,81,88,88,83,64,63,77,81,72,76,65,120",
-                        "endOffsets": "4011,4093,7785,7884,8045,8508,8597,8686,8770,8835,8899,8977,9059,9298,9657,9723,9844"
-                    }
-                },
                 {
                     "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\889142915d475a96fb62ff70368f4b26\\transformed\\jetified-material3-1.1.0\\res\\values-en-rAU\\values-en-rAU.xml",
                     "from": {
@@ -52,6 +35,23 @@
                         "startOffsets": "4176,8126,8223,8332",
                         "endColumns": "97,96,108,98",
                         "endOffsets": "4269,8218,8327,8426"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\c6f3da1869f813c4813a9e8a90532f1e\\transformed\\jetified-ui-release\\res\\values-en-rAU\\values-en-rAU.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,197,279,373,472,559,641,730,819,903,968,1032,1110,1192,1265,1342,1408",
+                        "endColumns": "91,81,93,98,86,81,88,88,83,64,63,77,81,72,76,65,120",
+                        "endOffsets": "192,274,368,467,554,636,725,814,898,963,1027,1105,1187,1260,1337,1403,1524"
+                    },
+                    "to": {
+                        "startLines": "40,41,75,76,78,83,84,85,86,87,88,89,90,93,97,98,99",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "3924,4016,7696,7790,7963,8431,8513,8602,8691,8775,8840,8904,8982,9230,9585,9662,9728",
+                        "endColumns": "91,81,93,98,86,81,88,88,83,64,63,77,81,72,76,65,120",
+                        "endOffsets": "4011,4093,7785,7884,8045,8508,8597,8686,8770,8835,8899,8977,9059,9298,9657,9723,9844"
                     }
                 },
                 {

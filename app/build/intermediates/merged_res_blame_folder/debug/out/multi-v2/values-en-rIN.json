@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.transigo.app-mergeDebugResources-73:/values-en-rIN/values-en-rIN.xml",
+            "outputFile": "com.transigo.app-mergeDebugResources-75:/values-en-rIN/values-en-rIN.xml",
             "map": [
                 {
                     "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\0e7ef6e5ca03635cc862230823807d7a\\transformed\\appcompat-1.6.1\\res\\values-en-rIN\\values-en-rIN.xml",
@@ -38,23 +38,6 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\7a2d692b16ccfd4374dbb3d3a5177e09\\transformed\\jetified-ui-1.4.3\\res\\values-en-rIN\\values-en-rIN.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "105,197,279,373,472,559,641,730,819,903,968,1032,1110,1192,1265,1342,1408",
-                        "endColumns": "91,81,93,98,86,81,88,88,83,64,63,77,81,72,76,65,120",
-                        "endOffsets": "192,274,368,467,554,636,725,814,898,963,1027,1105,1187,1260,1337,1403,1524"
-                    },
-                    "to": {
-                        "startLines": "40,41,75,76,78,83,84,85,86,87,88,89,90,93,97,98,99",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "3924,4016,7696,7790,7963,8431,8513,8602,8691,8775,8840,8904,8982,9230,9585,9662,9728",
-                        "endColumns": "91,81,93,98,86,81,88,88,83,64,63,77,81,72,76,65,120",
-                        "endOffsets": "4011,4093,7785,7884,8045,8508,8597,8686,8770,8835,8899,8977,9059,9298,9657,9723,9844"
-                    }
-                },
-                {
                     "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\8a33a946cc05f08eaee27d590d861e95\\transformed\\core-1.13.0\\res\\values-en-rIN\\values-en-rIN.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
@@ -69,6 +52,23 @@
                         "startOffsets": "3205,3301,3403,3502,3601,3705,3808,9386",
                         "endColumns": "95,101,98,98,103,102,115,100",
                         "endOffsets": "3296,3398,3497,3596,3700,3803,3919,9482"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\c6f3da1869f813c4813a9e8a90532f1e\\transformed\\jetified-ui-release\\res\\values-en-rIN\\values-en-rIN.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,197,279,373,472,559,641,730,819,903,968,1032,1110,1192,1265,1342,1408",
+                        "endColumns": "91,81,93,98,86,81,88,88,83,64,63,77,81,72,76,65,120",
+                        "endOffsets": "192,274,368,467,554,636,725,814,898,963,1027,1105,1187,1260,1337,1403,1524"
+                    },
+                    "to": {
+                        "startLines": "40,41,75,76,78,83,84,85,86,87,88,89,90,93,97,98,99",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "3924,4016,7696,7790,7963,8431,8513,8602,8691,8775,8840,8904,8982,9230,9585,9662,9728",
+                        "endColumns": "91,81,93,98,86,81,88,88,83,64,63,77,81,72,76,65,120",
+                        "endOffsets": "4011,4093,7785,7884,8045,8508,8597,8686,8770,8835,8899,8977,9059,9298,9657,9723,9844"
                     }
                 },
                 {

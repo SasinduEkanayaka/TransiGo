@@ -6,9 +6,8 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.transigo.app.data.repository.BookingRepository
 import com.transigo.app.data.repository.BookingForm
-import com.transigo.app.data.model.BookingType
-import com.transigo.app.data.model.RideType
-import com.transigo.app.data.model.Booking
+import com.transigo.app.data.model.*
+import com.transigo.app.utils.DistanceUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,6 +21,10 @@ data class BookingState(
     val type: BookingType = BookingType.AIRPORT,
     val pickupName: String = "",
     val dropName: String = "",
+    val fromLocation: Location = Location(),
+    val toLocation: Location = Location(),
+    val paymentMethod: PaymentMethod? = null,
+    val pricing: BookingPricing = BookingPricing(),
     val rideType: RideType = RideType.STANDARD,
     val scheduledAt: Timestamp? = null,
     val error: String? = null,
@@ -50,6 +53,20 @@ class BookingViewModel(
         _state.value = _state.value.copy(dropName = dropName)
     }
     
+    fun updateFromLocation(location: Location) {
+        _state.value = _state.value.copy(fromLocation = location)
+        calculatePricing()
+    }
+    
+    fun updateToLocation(location: Location) {
+        _state.value = _state.value.copy(toLocation = location)
+        calculatePricing()
+    }
+    
+    fun updatePaymentMethod(paymentMethod: PaymentMethod) {
+        _state.value = _state.value.copy(paymentMethod = paymentMethod)
+    }
+    
     fun updateRideType(rideType: RideType) {
         _state.value = _state.value.copy(rideType = rideType)
     }
@@ -58,10 +75,88 @@ class BookingViewModel(
         _state.value = _state.value.copy(scheduledAt = scheduledAt)
     }
     
+    private fun calculatePricing() {
+        val currentState = _state.value
+        if (currentState.fromLocation.latitude != 0.0 && currentState.toLocation.latitude != 0.0) {
+            val distance = DistanceUtils.calculateDistance(
+                currentState.fromLocation.latitude,
+                currentState.fromLocation.longitude,
+                currentState.toLocation.latitude,
+                currentState.toLocation.longitude
+            )
+            val pricing = BookingPricing.calculate(distance)
+            _state.value = currentState.copy(pricing = pricing)
+        }
+    }
+    
     fun clearError() {
         _state.value = _state.value.copy(error = null)
     }
     
+    fun createBooking(userId: String, selectedDate: Date?, selectedTime: Pair<Int, Int>?) {
+        val currentState = _state.value
+        
+        // Validate form
+        if (currentState.fromLocation.latitude == 0.0) {
+            _state.value = currentState.copy(error = "Please select pickup location on the map")
+            return
+        }
+        
+        if (currentState.toLocation.latitude == 0.0) {
+            _state.value = currentState.copy(error = "Please select destination on the map")
+            return
+        }
+        
+        if (currentState.paymentMethod == null) {
+            _state.value = currentState.copy(error = "Please select a payment method")
+            return
+        }
+        
+        if (selectedDate == null) {
+            _state.value = currentState.copy(error = "Please select a date")
+            return
+        }
+        
+        if (selectedTime == null) {
+            _state.value = currentState.copy(error = "Please select a time")
+            return
+        }
+        
+        viewModelScope.launch {
+            _state.value = currentState.copy(isLoading = true, error = null)
+            
+            // Combine date and time
+            val calendar = java.util.Calendar.getInstance()
+            calendar.time = selectedDate
+            calendar.set(java.util.Calendar.HOUR_OF_DAY, selectedTime.first)
+            calendar.set(java.util.Calendar.MINUTE, selectedTime.second)
+            
+            val form = BookingForm(
+                type = currentState.type,
+                pickupName = currentState.fromLocation.address,
+                dropName = currentState.toLocation.address,
+                rideType = currentState.rideType,
+                scheduledAt = Timestamp(calendar.time)
+            )
+            
+            bookingRepository.createBooking(userId, form)
+                .onSuccess {
+                    _state.value = _state.value.copy(
+                        isLoading = false,
+                        isCreated = true,
+                        error = null
+                    )
+                }
+                .onFailure { exception ->
+                    _state.value = _state.value.copy(
+                        isLoading = false,
+                        error = exception.message ?: "Failed to create booking"
+                    )
+                }
+        }
+    }
+    
+    // Keep the existing method for backward compatibility
     fun createBooking(userId: String) {
         val currentState = _state.value
         
@@ -102,6 +197,10 @@ class BookingViewModel(
                     )
                 }
         }
+    }
+    
+    fun resetForm() {
+        _state.value = BookingState()
     }
     
     fun loadMyBookings(userId: String) {
@@ -147,9 +246,5 @@ class BookingViewModel(
 
     fun clearRatingState() {
         _state.value = _state.value.copy(ratingSuccess = false, error = null)
-    }
-    
-    fun resetForm() {
-        _state.value = BookingState()
     }
 }

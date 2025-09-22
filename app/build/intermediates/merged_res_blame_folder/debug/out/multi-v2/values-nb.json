@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.transigo.app-mergeDebugResources-73:/values-nb/values-nb.xml",
+            "outputFile": "com.transigo.app-mergeDebugResources-75:/values-nb/values-nb.xml",
             "map": [
                 {
                     "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\889142915d475a96fb62ff70368f4b26\\transformed\\jetified-material3-1.1.0\\res\\values-nb\\values-nb.xml",
@@ -55,7 +55,24 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\9c0a0d07c1cdb983a4a7633e6cfda3d4\\transformed\\jetified-play-services-base-18.0.1\\res\\values-nb\\values.xml",
+                    "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\c6f3da1869f813c4813a9e8a90532f1e\\transformed\\jetified-ui-release\\res\\values-nb\\values-nb.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,198,279,376,476,564,640,728,817,899,963,1027,1107,1189,1259,1336,1403",
+                        "endColumns": "92,80,96,99,87,75,87,88,81,63,63,79,81,69,76,66,119",
+                        "endOffsets": "193,274,371,471,559,635,723,812,894,958,1022,1102,1184,1254,1331,1398,1518"
+                    },
+                    "to": {
+                        "startLines": "52,53,105,106,108,117,118,178,179,180,181,183,184,189,194,195,196",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "4810,4903,10850,10947,11123,11877,11953,16586,16675,16757,16821,16963,17043,17447,17877,17954,18021",
+                        "endColumns": "92,80,96,99,87,75,87,88,81,63,63,79,81,69,76,66,119",
+                        "endOffsets": "4898,4979,10942,11042,11206,11948,12036,16670,16752,16816,16880,17038,17120,17512,17949,18016,18136"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\76df29bc3dfd71987d6540b9c82f6b11\\transformed\\jetified-play-services-base-18.1.0\\res\\values-nb\\values.xml",
                     "from": {
                         "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
                         "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
@@ -86,23 +103,6 @@
                         "startOffsets": "7273,11499,11600,11712",
                         "endColumns": "109,100,111,96",
                         "endOffsets": "7378,11595,11707,11804"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\7a2d692b16ccfd4374dbb3d3a5177e09\\transformed\\jetified-ui-1.4.3\\res\\values-nb\\values-nb.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "105,198,279,376,476,564,640,728,817,899,963,1027,1107,1189,1259,1336,1403",
-                        "endColumns": "92,80,96,99,87,75,87,88,81,63,63,79,81,69,76,66,119",
-                        "endOffsets": "193,274,371,471,559,635,723,812,894,958,1022,1102,1184,1254,1331,1398,1518"
-                    },
-                    "to": {
-                        "startLines": "52,53,105,106,108,117,118,178,179,180,181,183,184,189,194,195,196",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "4810,4903,10850,10947,11123,11877,11953,16586,16675,16757,16821,16963,17043,17447,17877,17954,18021",
-                        "endColumns": "92,80,96,99,87,75,87,88,81,63,63,79,81,69,76,66,119",
-                        "endOffsets": "4898,4979,10942,11042,11206,11948,12036,16670,16752,16816,16880,17038,17120,17512,17949,18016,18136"
                     }
                 },
                 {
