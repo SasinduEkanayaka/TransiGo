@@ -60,6 +60,9 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     // Compose Material Icons
     implementation("androidx.compose.material:material-icons-extended")
+    
+    // Compose runtime livedata
+    implementation("androidx.compose.runtime:runtime-livedata")
 
     // Compose BOM
     implementation(platform("androidx.compose:compose-bom:2023.05.01"))

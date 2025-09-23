@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.transigo.app-mergeDebugResources-75:/values-en-rAU/values-en-rAU.xml",
+            "outputFile": "com.transigo.app-mergeDebugResources-76:/values-en-rAU/values-en-rAU.xml",
             "map": [
                 {
                     "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\889142915d475a96fb62ff70368f4b26\\transformed\\jetified-material3-1.1.0\\res\\values-en-rAU\\values-en-rAU.xml",

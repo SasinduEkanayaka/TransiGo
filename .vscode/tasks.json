@@ -15,6 +15,75 @@
 				"$gradle"
 			],
 			"group": "build"
+		},
+		{
+			"label": "Run Android App",
+			"type": "shell",
+			"command": "./gradlew.bat",
+			"args": [
+				"installDebug",
+				"--continue"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build Debug APK",
+			"type": "shell",
+			"command": "./gradlew.bat",
+			"args": [
+				"assembleDebug"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build Sri Lanka App",
+			"type": "shell",
+			"command": "./gradlew.bat",
+			"args": [
+				"assembleDebug"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build TransiGo App",
+			"type": "shell",
+			"command": "e:/TransiGo/gradlew.bat",
+			"args": [
+				"assembleDebug",
+				"--no-daemon",
+				"--console=plain"
+			],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Install and Run App",
+			"type": "shell",
+			"command": "./gradlew.bat",
+			"args": [
+				"installDebug",
+				"&&",
+				"adb",
+				"shell",
+				"am",
+				"start",
+				"-n",
+				"com.transigo.app/.MainActivity"
+			],
+			"isBackground": false,
+			"group": "build"
 		}
 	]
 }

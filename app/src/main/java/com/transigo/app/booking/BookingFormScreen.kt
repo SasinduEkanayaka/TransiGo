@@ -4,7 +4,9 @@ import android.Manifest
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.graphics.drawable.BitmapDrawable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -12,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -83,20 +84,20 @@ fun BookingFormScreen(
     var selectedTime by remember { mutableStateOf<Pair<Int, Int>?>(null) }
     var showPaymentSelector by remember { mutableStateOf(false) }
     var showBookingSummary by remember { mutableStateOf(false) }
+    var showLocationSearch by remember { mutableStateOf(false) }
+    var isSearchingFromLocation by remember { mutableStateOf(true) }
     
-    // Handle result from payment method screen
-    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
-    val selectedPaymentMethod by savedStateHandle?.getLiveData<PaymentMethod>("selected_payment_method")?.observeAsState()
-    
-    LaunchedEffect(selectedPaymentMethod) {
-        selectedPaymentMethod?.let { paymentMethod ->
-            bookingViewModel.updatePaymentMethod(paymentMethod)
-            savedStateHandle?.remove<PaymentMethod>("selected_payment_method")
+    // Handle result from payment method screen - simplified approach
+    LaunchedEffect(navController.currentBackStackEntry?.savedStateHandle) {
+        navController.currentBackStackEntry?.savedStateHandle?.let { handle ->
+            handle.get<PaymentMethod>("selected_payment_method")?.let { paymentMethod ->
+                bookingViewModel.updatePaymentMethod(paymentMethod)
+                handle.remove<PaymentMethod>("selected_payment_method")
+            }
         }
     }
     
     Box(modifier = Modifier.fillMaxSize()) {
-        // Map View
         Column(modifier = Modifier.fillMaxSize()) {
             // Top App Bar
             Row(
@@ -116,20 +117,27 @@ fun BookingFormScreen(
                 )
             }
             
-            // Map
+            // Map at the top - Larger and prominent
             AndroidView(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
+                    .height(350.dp), // Larger map at top
                 factory = { mapContext ->
                     MapView(mapContext).apply {
                         setTileSource(TileSourceFactory.MAPNIK)
                         setBuiltInZoomControls(true)
                         setMultiTouchControls(true)
-                        controller.setZoom(15.0)
+                        controller.setZoom(8.0)
                         
-                        // Default location (you can set to current location or city center)
-                        controller.setCenter(GeoPoint(40.7128, -74.0060)) // New York as example
+                        // Set map center to Sri Lanka (approximately Kandy)
+                        controller.setCenter(GeoPoint(7.2906, 80.6337))
+                        
+                        // Set map bounds to Sri Lanka only
+                        val sriLankaBounds = org.osmdroid.util.BoundingBox(
+                            9.8, 81.9, // North, East
+                            5.9, 79.6  // South, West
+                        )
+                        setScrollableAreaLimitDouble(sriLankaBounds)
                         
                         // Handle map clicks
                         overlays.add(object : org.osmdroid.views.overlay.Overlay() {
@@ -173,146 +181,266 @@ fun BookingFormScreen(
                 // Update markers when state changes
                 updateMapMarkers(mapView, state.fromLocation, state.toLocation)
             }
-        }
-        
-        // Bottom Sheet with booking details
-        Card(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-        ) {
-            Column(
+            
+            // Scrollable Form Section Below Map
+            LazyColumn(
                 modifier = Modifier
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // From/To Fields
-                OutlinedTextField(
-                    value = state.fromLocation.address,
-                    onValueChange = { /* Read-only, updated via map tap */ },
-                    label = { Text("From") },
-                    leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null, tint = Color.Green) },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true,
-                    placeholder = { Text("Tap on map to set pickup location") }
-                )
-                
-                OutlinedTextField(
-                    value = state.toLocation.address,
-                    onValueChange = { /* Read-only, updated via map tap */ },
-                    label = { Text("To") },
-                    leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null, tint = Color.Red) },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true,
-                    placeholder = { Text("Tap on map to set destination") }
-                )
-                
-                // Payment Method Selection
-                OutlinedTextField(
-                    value = state.paymentMethod?.displayName ?: "Select Payment Method",
-                    onValueChange = { },
-                    label = { Text("Payment Method") },
-                    leadingIcon = { Icon(Icons.Default.Payment, contentDescription = null) },
-                    trailingIcon = { 
-                        IconButton(onClick = { showPaymentSelector = true }) {
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true
-                )
-                
-                // Date Selection
-                OutlinedTextField(
-                    value = selectedDate?.let { SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(it) } ?: "Select Start Date",
-                    onValueChange = { },
-                    label = { Text("Pick a Date") },
-                    leadingIcon = { Icon(Icons.Default.DateRange, contentDescription = null) },
-                    trailingIcon = { 
-                        IconButton(onClick = { showDatePicker = true }) {
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true
-                )
-                
-                // Time Selection
-                OutlinedTextField(
-                    value = selectedTime?.let { "${String.format("%02d", it.first)}:${String.format("%02d", it.second)}" } ?: "Select Start Time",
-                    onValueChange = { },
-                    label = { Text("Pick a Time") },
-                    leadingIcon = { Icon(Icons.Default.AccessTime, contentDescription = null) },
-                    trailingIcon = { 
-                        IconButton(onClick = { showTimePicker = true }) {
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true
-                )
-                
-                // Distance and Total Cost
-                if (state.pricing.distance > 0) {
-                    Row(
+                item {
+                    // From/To Fields - Editable with manual search only
+                    Card(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                        shape = RoundedCornerShape(16.dp)
                     ) {
-                        Text(
-                            text = "Distance: ${DistanceUtils.formatDistance(state.pricing.distance)}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        Text(
-                            text = "Rate: ${DistanceUtils.formatPrice(state.pricing.pricePerKm)}/km",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                    
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Total:",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = DistanceUtils.formatPrice(state.pricing.totalCost),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Text(
+                                text = "Trip Details",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                OutlinedTextField(
+                                    value = state.fromLocation.address,
+                                    onValueChange = { address ->
+                                        // Only update the address, don't auto-search while typing
+                                        bookingViewModel.updateFromLocationAddress(address)
+                                    },
+                                    label = { Text("From") },
+                                    leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null, tint = Color.Green) },
+                                    modifier = Modifier.weight(1f),
+                                    placeholder = { Text("Enter pickup location") },
+                                    trailingIcon = {
+                                        IconButton(onClick = {
+                                            showLocationSearch = true
+                                            isSearchingFromLocation = true
+                                        }) {
+                                            Icon(Icons.Default.Search, contentDescription = "Search from suggestions")
+                                        }
+                                    }
+                                )
+                                
+                                // Set Location Button for From
+                                OutlinedButton(
+                                    onClick = {
+                                        if (state.fromLocation.address.isNotBlank()) {
+                                            setLocationWithCoordinates(state.fromLocation.address, true, bookingViewModel)
+                                        }
+                                    },
+                                    modifier = Modifier.padding(top = 8.dp),
+                                    enabled = state.fromLocation.address.isNotBlank()
+                                ) {
+                                    Text("Set", fontSize = 12.sp)
+                                }
+                            }
+                            
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                OutlinedTextField(
+                                    value = state.toLocation.address,
+                                    onValueChange = { address ->
+                                        // Only update the address, don't auto-search while typing
+                                        bookingViewModel.updateToLocationAddress(address)
+                                    },
+                                    label = { Text("To") },
+                                    leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null, tint = Color.Red) },
+                                    modifier = Modifier.weight(1f),
+                                    placeholder = { Text("Enter destination") },
+                                    trailingIcon = {
+                                        IconButton(onClick = {
+                                            showLocationSearch = true
+                                            isSearchingFromLocation = false
+                                        }) {
+                                            Icon(Icons.Default.Search, contentDescription = "Search from suggestions")
+                                        }
+                                    }
+                                )
+                                
+                                // Set Location Button for To
+                                OutlinedButton(
+                                    onClick = {
+                                        if (state.toLocation.address.isNotBlank()) {
+                                            setLocationWithCoordinates(state.toLocation.address, false, bookingViewModel)
+                                        }
+                                    },
+                                    modifier = Modifier.padding(top = 8.dp),
+                                    enabled = state.toLocation.address.isNotBlank()
+                                ) {
+                                    Text("Set", fontSize = 12.sp)
+                                }
+                            }
+                        }
                     }
                 }
                 
-                // Confirm Button
-                Button(
-                    onClick = {
-                        showBookingSummary = true
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    enabled = !state.isLoading && 
-                             state.fromLocation.latitude != 0.0 && 
-                             state.toLocation.latitude != 0.0 &&
-                             state.paymentMethod != null &&
-                             selectedDate != null &&
-                             selectedTime != null
-                ) {
-                    if (state.isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    } else {
-                        Text("Confirm", fontSize = 16.sp)
+                item {
+                    // Payment Method Section
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Text(
+                                text = "Payment",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            
+                            OutlinedTextField(
+                                value = when {
+                                    state.selectedCard != null -> "${state.selectedCard!!.getDisplayNumber()} (${state.selectedCard!!.getCardType()})"
+                                    state.paymentMethod != null -> state.paymentMethod!!.displayName
+                                    else -> "Select Payment Method"
+                                },
+                                onValueChange = { },
+                                label = { Text("Payment Method") },
+                                leadingIcon = { Icon(Icons.Default.Payment, contentDescription = null) },
+                                trailingIcon = { 
+                                    IconButton(onClick = { showPaymentSelector = true }) {
+                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                    }
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                readOnly = true
+                            )
+                        }
+                    }
+                }
+                
+                item {
+                    // Date and Time Section
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Text(
+                                text = "Schedule",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                // Date Selection
+                                OutlinedTextField(
+                                    value = selectedDate?.let { SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(it) } ?: "Select Date",
+                                    onValueChange = { },
+                                    label = { Text("Date") },
+                                    leadingIcon = { Icon(Icons.Default.DateRange, contentDescription = null) },
+                                    trailingIcon = { 
+                                        IconButton(onClick = { showDatePicker = true }) {
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                        }
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    readOnly = true
+                                )
+                                
+                                // Time Selection
+                                OutlinedTextField(
+                                    value = selectedTime?.let { "${String.format("%02d", it.first)}:${String.format("%02d", it.second)}" } ?: "Select Time",
+                                    onValueChange = { },
+                                    label = { Text("Time") },
+                                    leadingIcon = { Icon(Icons.Default.AccessTime, contentDescription = null) },
+                                    trailingIcon = { 
+                                        IconButton(onClick = { showTimePicker = true }) {
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                        }
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    readOnly = true
+                                )
+                            }
+                        }
+                    }
+                }
+                
+                // Pricing Information
+                if (state.pricing.distance > 0) {
+                    item {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Text(
+                                    text = "Trip Summary",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text("Distance:")
+                                    Text("${String.format("%.1f", state.pricing.distance)} km")
+                                }
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text("Rate:")
+                                    Text("$${String.format("%.2f", state.pricing.pricePerKm)}/km")
+                                }
+                                Divider()
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text("Total:", fontWeight = FontWeight.Bold)
+                                    Text("$${String.format("%.2f", state.pricing.totalCost)}", fontWeight = FontWeight.Bold)
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                item {
+                    // Book Now Button
+                    Button(
+                        onClick = { showBookingSummary = true },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        enabled = state.fromLocation.latitude != 0.0 && 
+                                state.toLocation.latitude != 0.0 && 
+                                state.paymentMethod != null &&
+                                selectedDate != null && 
+                                selectedTime != null,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6C63FF)),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text("Book Now", fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Medium)
                     }
                 }
             }
@@ -372,10 +500,11 @@ fun BookingFormScreen(
                     PaymentMethod.values().forEach { method ->
                         TextButton(
                             onClick = {
-                                if (method == PaymentMethod.CARD || method == PaymentMethod.MOBILE_BANKING) {
-                                    // Navigate to payment method screen
+                                if (method == PaymentMethod.CARD) {
+                                    // Navigate to payment method screen for card details
                                     navController.navigate("${NavigationRoutes.PAYMENT_METHOD}/${method.name}")
                                 } else {
+                                    // For cash on ride, set directly
                                     bookingViewModel.updatePaymentMethod(method)
                                 }
                                 showPaymentSelector = false
@@ -512,9 +641,123 @@ fun BookingFormScreen(
                             enabled = !state.isLoading
                         ) {
                             if (state.isLoading) {
-                                CircularProgressIndicator(size = 16.dp)
+                                CircularProgressIndicator(modifier = Modifier.size(16.dp))
                             } else {
                                 Text("Confirm Booking")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Location Search Dialog
+    if (showLocationSearch) {
+        val currentQuery = if (isSearchingFromLocation) state.fromLocation.address else state.toLocation.address
+        
+        Dialog(onDismissRequest = { showLocationSearch = false }) {
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = if (isSearchingFromLocation) "Select Pickup Location" else "Select Destination",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    
+                    // Show current typed location as first option
+                    if (currentQuery.isNotBlank()) {
+                        TextButton(
+                            onClick = {
+                                // Use the currently typed location and set coordinates
+                                setLocationWithCoordinates(currentQuery.trim(), isSearchingFromLocation, bookingViewModel)
+                                showLocationSearch = false
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Icon(
+                                    Icons.Default.Edit,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Use: \"$currentQuery\"",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Medium,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Start
+                                )
+                            }
+                        }
+                        
+                        Divider()
+                    }
+                    
+                    Text(
+                        text = "Popular Sri Lankan Locations:",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    
+                    // Filter suggestions based on current query
+                    val suggestions = if (currentQuery.isBlank()) {
+                        sriLankanLocations.entries.take(8)
+                    } else {
+                        sriLankanLocations.entries.filter { (locationName, _) ->
+                            locationName.contains(currentQuery.lowercase()) || 
+                            currentQuery.lowercase() in locationName
+                        }.take(8)
+                    }
+                    
+                    suggestions.forEach { (locationName, geoPoint) ->
+                        TextButton(
+                            onClick = {
+                                val location = Location(
+                                    latitude = geoPoint.latitude,
+                                    longitude = geoPoint.longitude,
+                                    address = locationName.split(" ").joinToString(" ") { 
+                                        it.replaceFirstChar { char -> char.uppercaseChar() } 
+                                    }
+                                )
+                                
+                                if (isSearchingFromLocation) {
+                                    bookingViewModel.updateFromLocation(location)
+                                } else {
+                                    bookingViewModel.updateToLocation(location)
+                                }
+                                
+                                showLocationSearch = false
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Icon(
+                                    Icons.Default.LocationOn,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = locationName.split(" ").joinToString(" ") { 
+                                        it.replaceFirstChar { char -> char.uppercaseChar() } 
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Start
+                                )
                             }
                         }
                     }
@@ -538,56 +781,197 @@ private fun updateMapMarkers(mapView: MapView, fromLocation: Location, toLocatio
     
     val context = mapView.context
     
-    // Add "From" marker
+    // Add "From" marker (Green color for pickup)
     if (fromLocation.latitude != 0.0) {
         val fromMarker = Marker(mapView)
         fromMarker.position = GeoPoint(fromLocation.latitude, fromLocation.longitude)
         fromMarker.title = "From: ${fromLocation.address}"
         fromMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
         
-        // Set green marker icon
-        val drawable = ContextCompat.getDrawable(context, R.drawable.ic_pickup_location)
-        if (drawable != null) {
-            fromMarker.icon = drawable
+        // Set green marker icon for pickup
+        fromMarker.icon = ContextCompat.getDrawable(context, R.drawable.ic_pickup_location)?.apply {
+            setTint(android.graphics.Color.GREEN)
         }
         
         mapView.overlays.add(fromMarker)
     }
     
-    // Add "To" marker
+    // Add "To" marker (Red color for destination)
     if (toLocation.latitude != 0.0) {
         val toMarker = Marker(mapView)
         toMarker.position = GeoPoint(toLocation.latitude, toLocation.longitude)
         toMarker.title = "To: ${toLocation.address}"
         toMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
         
-        // Set red marker icon
-        val drawable = ContextCompat.getDrawable(context, R.drawable.ic_dropoff_location)
-        if (drawable != null) {
-            toMarker.icon = drawable
+        // Set red marker icon for destination
+        toMarker.icon = ContextCompat.getDrawable(context, R.drawable.ic_dropoff_location)?.apply {
+            setTint(android.graphics.Color.RED)
         }
         
         mapView.overlays.add(toMarker)
     }
     
-    // Add route line if both points are set
+    // Add route if both points are set
     if (fromLocation.latitude != 0.0 && toLocation.latitude != 0.0) {
-        val polyline = Polyline()
-        polyline.addPoint(GeoPoint(fromLocation.latitude, fromLocation.longitude))
-        polyline.addPoint(GeoPoint(toLocation.latitude, toLocation.longitude))
-        polyline.color = ContextCompat.getColor(context, R.color.purple_500)
-        polyline.width = 8f
-        mapView.overlays.add(polyline)
+        // Try to get a proper road route using OpenStreetMap routing
+        val fromPoint = GeoPoint(fromLocation.latitude, fromLocation.longitude)
+        val toPoint = GeoPoint(toLocation.latitude, toLocation.longitude)
         
-        // Center map on both points
+        try {
+            // For now, use straight line route - can be enhanced later with proper routing service
+            drawStraightLineRoute(mapView, fromPoint, toPoint)
+        } catch (e: Exception) {
+            // Fallback to straight line if any issues occur
+            drawStraightLineRoute(mapView, fromPoint, toPoint)
+        }
+        
+        // Center map on both points with proper zoom
         val boundingBox = org.osmdroid.util.BoundingBox.fromGeoPoints(
-            listOf(
-                GeoPoint(fromLocation.latitude, fromLocation.longitude),
-                GeoPoint(toLocation.latitude, toLocation.longitude)
-            )
+            listOf(fromPoint, toPoint)
         )
-        mapView.zoomToBoundingBox(boundingBox, true, 100)
+        mapView.zoomToBoundingBox(boundingBox, true, 150) // Increased padding for better view
+    } else if (fromLocation.latitude != 0.0) {
+        // Center on from location
+        mapView.controller.animateTo(GeoPoint(fromLocation.latitude, fromLocation.longitude))
+        mapView.controller.setZoom(13.0)
+    } else if (toLocation.latitude != 0.0) {
+        // Center on to location
+        mapView.controller.animateTo(GeoPoint(toLocation.latitude, toLocation.longitude))
+        mapView.controller.setZoom(13.0)
     }
     
     mapView.invalidate()
+}
+
+private fun drawStraightLineRoute(mapView: MapView, fromPoint: GeoPoint, toPoint: GeoPoint) {
+    val polyline = Polyline()
+    polyline.addPoint(fromPoint)
+    polyline.addPoint(toPoint)
+    polyline.color = android.graphics.Color.BLUE
+    polyline.width = 10f
+    polyline.paint.strokeCap = android.graphics.Paint.Cap.ROUND
+    polyline.paint.strokeJoin = android.graphics.Paint.Join.ROUND
+    mapView.overlays.add(polyline)
+}
+
+// Sri Lankan cities and locations database
+private val sriLankanLocations = mapOf(
+    "colombo" to GeoPoint(6.9271, 79.8612),
+    "kandy" to GeoPoint(7.2906, 80.6337),
+    "galle" to GeoPoint(6.0535, 80.2210),
+    "jaffna" to GeoPoint(9.6615, 80.0255),
+    "negombo" to GeoPoint(7.2083, 79.8358),
+    "anuradhapura" to GeoPoint(8.3114, 80.4037),
+    "polonnaruwa" to GeoPoint(7.9403, 81.0188),
+    "matara" to GeoPoint(5.9549, 80.5550),
+    "batticaloa" to GeoPoint(7.7102, 81.6924),
+    "trincomalee" to GeoPoint(8.5874, 81.2152),
+    "kurunegala" to GeoPoint(7.4818, 80.3609),
+    "ratnapura" to GeoPoint(6.6828, 80.4026),
+    "badulla" to GeoPoint(6.9934, 81.0550),
+    "kalmunai" to GeoPoint(7.4098, 81.8344),
+    "gampaha" to GeoPoint(7.0873, 79.9990),
+    "kalutara" to GeoPoint(6.5854, 79.9607),
+    "chilaw" to GeoPoint(7.5759, 79.7951),
+    "hambantota" to GeoPoint(6.1241, 81.1185),
+    "nuwara eliya" to GeoPoint(6.9497, 80.7891),
+    "ella" to GeoPoint(6.8707, 81.0464),
+    "sigiriya" to GeoPoint(7.9568, 80.7598),
+    "dambulla" to GeoPoint(7.8731, 80.6511),
+    "mirissa" to GeoPoint(5.9482, 80.4617),
+    "unawatuna" to GeoPoint(6.0108, 80.2492),
+    "bentota" to GeoPoint(6.4261, 80.0007),
+    "hikkaduwa" to GeoPoint(6.1407, 80.1003),
+    "mount lavinia" to GeoPoint(6.8344, 79.8633),
+    "dehiwala" to GeoPoint(6.8515, 79.8632),
+    "maharagama" to GeoPoint(6.8422, 79.9265),
+    "moratuwa" to GeoPoint(6.7730, 79.8816),
+    "kotte" to GeoPoint(6.8905, 79.9015),
+    "kelaniya" to GeoPoint(6.9553, 79.9220),
+    "katunayake" to GeoPoint(7.1697, 79.8838),
+    "bandarawela" to GeoPoint(6.8326, 80.9847),
+    "haputale" to GeoPoint(6.7678, 80.9695),
+    "tissamaharama" to GeoPoint(6.2733, 81.2866),
+    "arugam bay" to GeoPoint(6.8404, 81.8361),
+    "pasikudah" to GeoPoint(7.9333, 81.5500),
+    "nilaveli" to GeoPoint(8.6833, 81.2167),
+    "uppuveli" to GeoPoint(8.6000, 81.2167),
+    "kalpitiya" to GeoPoint(8.2333, 79.7667),
+    "mannar" to GeoPoint(8.9811, 79.9045),
+    "vavuniya" to GeoPoint(8.7542, 80.4982),
+    "kilinochchi" to GeoPoint(9.3961, 80.3592),
+    "mullaitivu" to GeoPoint(9.2670, 80.8142)
+)
+
+private fun setLocationWithCoordinates(address: String, isFromLocation: Boolean, viewModel: BookingViewModel) {
+    val searchQuery = address.lowercase().trim()
+    
+    // Find matching location in Sri Lanka database
+    val matchedLocation = sriLankanLocations.entries.find { (name, _) ->
+        name.contains(searchQuery) || searchQuery.contains(name)
+    }
+    
+    val location = if (matchedLocation != null) {
+        // Use predefined location with exact coordinates
+        val (name, geoPoint) = matchedLocation
+        Location(
+            latitude = geoPoint.latitude,
+            longitude = geoPoint.longitude,
+            address = address // Keep user's typed text
+        )
+    } else {
+        // For any typed location, create a location with default Sri Lanka center coordinates
+        Location(
+            latitude = 7.2906, // Center of Sri Lanka
+            longitude = 80.6337,
+            address = address
+        )
+    }
+    
+    if (isFromLocation) {
+        viewModel.updateFromLocation(location)
+    } else {
+        viewModel.updateToLocation(location)
+    }
+}
+
+private fun searchLocationInSriLanka(query: String, isFromLocation: Boolean, viewModel: BookingViewModel) {
+    val searchQuery = query.lowercase().trim()
+    
+    // Find matching location in Sri Lanka database
+    val matchedLocation = sriLankanLocations.entries.find { (name, _) ->
+        name.contains(searchQuery) || searchQuery.contains(name)
+    }
+    
+    if (matchedLocation != null) {
+        // Use predefined location with exact coordinates
+        val (name, geoPoint) = matchedLocation
+        val location = Location(
+            latitude = geoPoint.latitude,
+            longitude = geoPoint.longitude,
+            address = name.split(" ").joinToString(" ") { it.replaceFirstChar { char -> char.uppercaseChar() } }
+        )
+        
+        if (isFromLocation) {
+            viewModel.updateFromLocation(location)
+        } else {
+            viewModel.updateToLocation(location)
+        }
+    } else {
+        // For any typed location, create a location with default Sri Lanka center coordinates
+        // This allows users to type any location name
+        val location = Location(
+            latitude = 7.2906, // Center of Sri Lanka
+            longitude = 80.6337,
+            address = query.trim().split(" ").joinToString(" ") { 
+                it.replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase() else char.toString() } 
+            }
+        )
+        
+        if (isFromLocation) {
+            viewModel.updateFromLocation(location)
+        } else {
+            viewModel.updateToLocation(location)
+        }
+    }
 }

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.transigo.app-mergeDebugResources-75:/values-ko/values-ko.xml",
+            "outputFile": "com.transigo.app-mergeDebugResources-76:/values-ko/values-ko.xml",
             "map": [
                 {
                     "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\c6f3da1869f813c4813a9e8a90532f1e\\transformed\\jetified-ui-release\\res\\values-ko\\values-ko.xml",

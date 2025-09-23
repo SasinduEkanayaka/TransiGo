@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.transigo.app-mergeDebugResources-75:/values-en-rXC/values-en-rXC.xml",
+            "outputFile": "com.transigo.app-mergeDebugResources-76:/values-en-rXC/values-en-rXC.xml",
             "map": [
                 {
                     "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\8a33a946cc05f08eaee27d590d861e95\\transformed\\core-1.13.0\\res\\values-en-rXC\\values-en-rXC.xml",

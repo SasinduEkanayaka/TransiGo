@@ -7,10 +7,8 @@ data class Location(
 )
 
 enum class PaymentMethod(val displayName: String) {
-    CASH("Cash"),
-    MOBILE_BANKING("Mobile Banking"),
-    CARD("Card Payment"),
-    WALLET("Digital Wallet")
+    CASH("Cash on Ride"),
+    CARD("Card Payment")
 }
 
 data class BookingPricing(
@@ -23,6 +21,28 @@ data class BookingPricing(
             val pricePerKm = if (distance <= 5.0) 0.8 else 0.6
             val totalCost = distance * pricePerKm
             return BookingPricing(distance, pricePerKm, totalCost)
+        }
+    }
+}
+
+data class SavedCard(
+    val id: String = "",
+    val cardNumber: String = "",
+    val cardholderName: String = "",
+    val expiryDate: String = "",
+    val cardBrand: String = "",
+    val isDefault: Boolean = false
+) {
+    fun getDisplayNumber(): String {
+        return "**** **** **** ${cardNumber.takeLast(4)}"
+    }
+    
+    fun getCardType(): String {
+        return when {
+            cardNumber.startsWith("4") -> "Visa"
+            cardNumber.startsWith("5") || cardNumber.startsWith("2") -> "MasterCard"
+            cardNumber.startsWith("3") -> "Amex"
+            else -> "Card"
         }
     }
 }
