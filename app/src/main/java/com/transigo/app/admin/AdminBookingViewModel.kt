@@ -21,9 +21,13 @@ class AdminBookingViewModel @Inject constructor(
     private val adminBookingRepository: AdminBookingRepository
 ) : ViewModel() {
 
-    // Current filter state
+    // Current filter state - start with showing all bookings
     private val _currentFilter = MutableStateFlow(BookingStatus.REQUESTED)
     val currentFilter: StateFlow<BookingStatus> = _currentFilter.asStateFlow()
+    
+    // Track if we're showing all bookings vs filtered
+    private val _showingAllBookings = MutableStateFlow(true)
+    val showingAllBookings: StateFlow<Boolean> = _showingAllBookings.asStateFlow()
 
     // Bookings data
     private val _bookings = MutableStateFlow<List<Booking>>(emptyList())
@@ -50,7 +54,8 @@ class AdminBookingViewModel @Inject constructor(
     val actionInProgress: StateFlow<String?> = _actionInProgress.asStateFlow()
 
     init {
-        loadBookings()
+        // Start by loading all bookings
+        loadAllBookings()
         loadActiveDrivers()
     }
 
@@ -60,6 +65,7 @@ class AdminBookingViewModel @Inject constructor(
     fun setFilter(status: BookingStatus) {
         if (_currentFilter.value != status) {
             _currentFilter.value = status
+            _showingAllBookings.value = false
             loadBookings()
         }
     }
@@ -75,15 +81,48 @@ class AdminBookingViewModel @Inject constructor(
             adminBookingRepository.getBookingsByStatus(_currentFilter.value)
                 .collect { result ->
                     result.fold(
-                        onSuccess = { bookingList ->
-                            _bookings.value = bookingList
+                        onSuccess = { bookings ->
+                            _bookings.value = bookings
                             _isLoading.value = false
                             
                             // Load user details for each booking
-                            loadUsersForBookings(bookingList)
+                            loadUsersForBookings(bookings)
                         },
                         onFailure = { exception ->
-                            _error.value = exception.message
+                            _error.value = exception.message ?: "Failed to load bookings"
+                            _isLoading.value = false
+                            
+                            // Clear bookings on failure
+                            _bookings.value = emptyList()
+                        }
+                    )
+                }
+        }
+    }
+
+    /**
+     * Load all bookings regardless of status
+     */
+    fun loadAllBookings() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            _showingAllBookings.value = true
+
+            adminBookingRepository.getAllBookings()
+                .collect { result ->
+                    result.fold(
+                        onSuccess = { bookings ->
+                            println("AdminBookingViewModel: Loaded ${bookings.size} bookings")
+                            _bookings.value = bookings
+                            _isLoading.value = false
+                            
+                            // Load user details for each booking
+                            loadUsersForBookings(bookings)
+                        },
+                        onFailure = { exception ->
+                            println("AdminBookingViewModel: Failed to load bookings: ${exception.message}")
+                            _error.value = exception.message ?: "Failed to load bookings"
                             _isLoading.value = false
                         }
                     )
@@ -230,5 +269,23 @@ class AdminBookingViewModel @Inject constructor(
     fun getDriverName(driverId: String?): String {
         if (driverId == null) return "Not assigned"
         return _activeDrivers.value.find { it.id == driverId }?.fullName ?: "Unknown Driver"
+    }
+
+    /**
+     * Create sample data for testing
+     */
+    fun createSampleData() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            adminBookingRepository.createSampleBookings().fold(
+                onSuccess = {
+                    loadBookings() // Refresh after creating sample data
+                },
+                onFailure = { exception ->
+                    _error.value = "Failed to create sample data: ${exception.message}"
+                    _isLoading.value = false
+                }
+            )
+        }
     }
 }

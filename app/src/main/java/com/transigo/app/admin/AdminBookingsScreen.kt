@@ -3,6 +3,7 @@ package com.transigo.app.admin
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,6 +43,7 @@ fun AdminBookingsScreen(
 ) {
     val bookings by viewModel.bookings.collectAsState()
     val currentFilter by viewModel.currentFilter.collectAsState()
+    val showingAllBookings by viewModel.showingAllBookings.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
     val actionInProgress by viewModel.actionInProgress.collectAsState()
@@ -49,176 +52,124 @@ fun AdminBookingsScreen(
     var showDriverDialog by remember { mutableStateOf(false) }
     var selectedBookingForDriver by remember { mutableStateOf<Booking?>(null) }
 
-    // Background gradient
-    val backgroundGradient = Brush.verticalGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-            MaterialTheme.colorScheme.secondary.copy(alpha = 0.05f),
-            MaterialTheme.colorScheme.surface
-        )
-    )
+    // Initialize data loading
+    LaunchedEffect(Unit) {
+        viewModel.loadAllBookings()
+        viewModel.loadActiveDrivers()
+    }
 
-    var isVisible by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) { isVisible = true }
-
-    Box(
+    // Simple clean background
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundGradient)
+            .background(Color.White)
+            .padding(16.dp)
     ) {
-        Column(
+        // Simple Header
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp)
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            AnimatedVisibility(
-                visible = isVisible,
-                enter = slideInVertically(initialOffsetY = { -it }, animationSpec = tween(800, easing = FastOutSlowInEasing)) +
-                        fadeIn(animationSpec = tween(800))
+            IconButton(
+                onClick = { navController.navigateUp() }
             ) {
-                // Modern Header Card
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(28.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White.copy(alpha = 0.95f)
-                    )
-                ) {
-                    Box {
-                        // Gradient overlay
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    Brush.horizontalGradient(
-                                        colors = listOf(
-                                            Primary.copy(alpha = 0.08f),
-                                            Secondary.copy(alpha = 0.05f),
-                                            Color.Transparent
-                                        )
-                                    )
-                                )
-                        )
-                        
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(24.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                // Modern Back Button
-                                Card(
-                                    modifier = Modifier.size(52.dp),
-                                    shape = CircleShape,
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = Primary.copy(alpha = 0.15f)
-                                    ),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-                                ) {
-                                    IconButton(
-                                        onClick = { navController.popBackStack() },
-                                        modifier = Modifier.fillMaxSize()
-                                    ) {
-                                        Icon(
-                                            Icons.Rounded.ArrowBack,
-                                            contentDescription = "Back",
-                                            tint = Primary,
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                    }
-                                }
-                                
-                                Spacer(modifier = Modifier.width(16.dp))
-                                
-                                Column {
-                                    Text(
-                                        text = "Booking Management",
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Gray900
-                                    )
-                                    Text(
-                                        text = "Review, approve and assign drivers to rides",
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = Gray600,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                }
-                            }
+                Icon(
+                    Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.Black
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(8.dp))
+            
+            Text(
+                text = "Booking Management",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                modifier = Modifier.weight(1f)
+            )
+            
+            IconButton(
+                onClick = { 
+                    if (showingAllBookings) {
+                        viewModel.loadAllBookings()
+                    } else {
+                        viewModel.loadBookings()
+                    }
+                }
+            ) {
+                Icon(
+                    Icons.Default.Refresh,
+                    contentDescription = "Refresh",
+                    tint = Color.Black
+                )
+            }
+        }
 
-                            // Refresh Button
-                            Card(
-                                modifier = Modifier.size(48.dp),
-                                shape = CircleShape,
-                                colors = CardDefaults.cardColors(
-                                    containerColor = Secondary.copy(alpha = 0.15f)
-                                ),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-                            ) {
-                                IconButton(
-                                    onClick = { viewModel.loadBookings() },
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
-                                    Icon(
-                                        Icons.Rounded.Refresh,
-                                        contentDescription = "Refresh",
-                                        tint = Secondary,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                }
-                            }
-                        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Simple Filter Tabs
+        SimpleFilterTabs(
+            showingAllBookings = showingAllBookings,
+            currentFilter = currentFilter,
+            onFilterChanged = { filter ->
+                if (filter == null) {
+                    viewModel.loadAllBookings()
+                } else {
+                    viewModel.setFilter(filter)
+                }
+            }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Content with better error handling
+        when {
+            isLoading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text("Loading bookings...", color = Color.Gray)
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Filter Tabs
-            FilterTabs(
-                currentFilter = currentFilter,
-                onFilterChanged = viewModel::setFilter
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Content
-            Box(modifier = Modifier.fillMaxSize()) {
-                when {
-                    isLoading -> {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
-                    }
-                    error != null -> {
-                        error?.let { errMsg ->
-                            ErrorContent(
-                                error = errMsg,
-                                onRetry = viewModel::loadBookings,
-                                onDismiss = viewModel::clearError
-                            )
+            error != null -> {
+                SimpleErrorContent(
+                    error = error!!,
+                    onRetry = { 
+                        viewModel.clearError()
+                        if (showingAllBookings) {
+                            viewModel.loadAllBookings()
+                        } else {
+                            viewModel.loadBookings()
                         }
+                    },
+                    onCreateSample = { viewModel.createSampleData() }
+                )
+            }
+            bookings.isEmpty() -> {
+                SimpleEmptyState(
+                    onCreateSampleData = { viewModel.createSampleData() },
+                    onRefresh = { viewModel.loadAllBookings() }
+                )
+            }
+            else -> {
+                SimpleBookingsList(
+                    bookings = bookings,
+                    actionInProgress = actionInProgress,
+                    viewModel = viewModel,
+                    onAssignDriver = { booking ->
+                        selectedBookingForDriver = booking
+                        showDriverDialog = true
                     }
-                    bookings.isEmpty() -> {
-                        EmptyStateContent(currentFilter)
-                    }
-                    else -> {
-                        BookingsList(
-                            bookings = bookings,
-                            currentFilter = currentFilter,
-                            actionInProgress = actionInProgress,
-                            viewModel = viewModel,
-                            onAssignDriver = { booking ->
-                                selectedBookingForDriver = booking
-                                showDriverDialog = true
-                            }
-                        )
-                    }
-                }
+                )
             }
         }
     }
@@ -242,54 +193,94 @@ fun AdminBookingsScreen(
 }
 
 @Composable
-fun FilterTabs(
+fun SimpleFilterTabs(
+    showingAllBookings: Boolean,
     currentFilter: BookingStatus,
-    onFilterChanged: (BookingStatus) -> Unit
+    onFilterChanged: (BookingStatus?) -> Unit
 ) {
-    val filters = listOf(
-        BookingStatus.REQUESTED,
-        BookingStatus.APPROVED,
-        BookingStatus.COMPLETED
-    )
-
-    ScrollableTabRow(
-        selectedTabIndex = filters.indexOf(currentFilter),
-        modifier = Modifier.fillMaxWidth(),
-        edgePadding = 12.dp,
-        containerColor = Color.Transparent
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        filters.forEach { filter ->
-            Tab(
-                selected = currentFilter == filter,
-                onClick = { onFilterChanged(filter) },
-                text = { 
-                    Text(
-                        text = filter.name,
-                        fontWeight = if (currentFilter == filter) FontWeight.Bold else FontWeight.Normal
-                    )
-                }
-            )
-        }
+        // All Bookings Tab
+        FilterTab(
+            text = "All",
+            isSelected = showingAllBookings,
+            onClick = { onFilterChanged(null) },
+            modifier = Modifier.weight(1f)
+        )
+        
+        // Requested Tab
+        FilterTab(
+            text = "Requested",
+            isSelected = !showingAllBookings && currentFilter == BookingStatus.REQUESTED,
+            onClick = { onFilterChanged(BookingStatus.REQUESTED) },
+            modifier = Modifier.weight(1f)
+        )
+        
+        // Approved Tab
+        FilterTab(
+            text = "Approved",
+            isSelected = !showingAllBookings && currentFilter == BookingStatus.APPROVED,
+            onClick = { onFilterChanged(BookingStatus.APPROVED) },
+            modifier = Modifier.weight(1f)
+        )
+        
+        // Completed Tab
+        FilterTab(
+            text = "Completed",
+            isSelected = !showingAllBookings && currentFilter == BookingStatus.COMPLETED,
+            onClick = { onFilterChanged(BookingStatus.COMPLETED) },
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
 @Composable
-fun BookingsList(
+fun FilterTab(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+            contentColor = if (isSelected) Color.White else Color.Black
+        ),
+        shape = RoundedCornerShape(12.dp),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = if (isSelected) 2.dp else 0.dp
+        ),
+        border = if (!isSelected) BorderStroke(1.dp, Color.Gray.copy(alpha = 0.3f)) else null
+    ) {
+        Text(
+            text = text,
+            fontSize = 14.sp,
+            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
+        )
+    }
+}
+
+@Composable
+fun SimpleBookingsList(
     bookings: List<Booking>,
-    currentFilter: BookingStatus,
     actionInProgress: String?,
     viewModel: AdminBookingViewModel,
     onAssignDriver: (Booking) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(bookings) { booking ->
-            BookingCard(
+            SimpleBookingCard(
                 booking = booking,
-                currentFilter = currentFilter,
                 actionInProgress = actionInProgress,
                 viewModel = viewModel,
                 onAssignDriver = onAssignDriver
@@ -298,63 +289,175 @@ fun BookingsList(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookingCard(
+fun SimpleErrorContent(
+    error: String,
+    onRetry: () -> Unit,
+    onCreateSample: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            Icons.Default.Error,
+            contentDescription = null,
+            modifier = Modifier.size(64.dp),
+            tint = MaterialTheme.colorScheme.error
+        )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        Text(
+            text = "Error Loading Bookings",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
+        )
+        
+        Spacer(modifier = Modifier.height(8.dp))
+        
+        Text(
+            text = error,
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Gray,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+        )
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Button(
+                onClick = onRetry,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Icon(Icons.Default.Refresh, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Retry")
+            }
+            
+            OutlinedButton(
+                onClick = onCreateSample
+            ) {
+                Icon(Icons.Default.Add, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Add Sample")
+            }
+        }
+    }
+}
+
+@Composable
+fun SimpleEmptyState(
+    onCreateSampleData: () -> Unit,
+    onRefresh: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            Icons.Default.BookmarkBorder,
+            contentDescription = null,
+            modifier = Modifier.size(80.dp),
+            tint = Color.Gray
+        )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        Text(
+            text = "No Bookings Found",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
+        )
+        
+        Spacer(modifier = Modifier.height(8.dp))
+        
+        Text(
+            text = "There are no bookings to display at the moment.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Gray,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+        )
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Button(
+                onClick = onRefresh,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Icon(Icons.Default.Refresh, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Refresh")
+            }
+            
+            OutlinedButton(
+                onClick = onCreateSampleData
+            ) {
+                Icon(Icons.Default.Add, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Add Sample Data")
+            }
+        }
+    }
+}
+
+@Composable
+fun SimpleBookingCard(
     booking: Booking,
-    currentFilter: BookingStatus,
     actionInProgress: String?,
     viewModel: AdminBookingViewModel,
     onAssignDriver: (Booking) -> Unit
 ) {
     val isActionLoading = actionInProgress == booking.id
-    val userEmail = viewModel.getUserEmail(booking.userId)
     
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        border = BorderStroke(1.dp, Color.Gray.copy(alpha = 0.2f))
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            // Header with status and timestamp
+            // Header with status and date
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                StatusChip(booking.status)
+                SimpleStatusChip(status = booking.status)
+                
                 Text(
-                    text = formatTimestamp(booking.requestedAt),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 12.sp
+                    text = formatBookingDate(booking.requestedAt),
+                    fontSize = 12.sp,
+                    color = Color.Gray
                 )
             }
             
             Spacer(modifier = Modifier.height(12.dp))
             
-            // User email
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Default.Person,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = userEmail,
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
             // Route information
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Icon(
                     Icons.Default.LocationOn,
                     contentDescription = null,
@@ -366,59 +469,142 @@ fun BookingCard(
                     text = "${booking.pickupName} → ${booking.dropName}",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    color = Color.Black,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
                 )
             }
             
             Spacer(modifier = Modifier.height(8.dp))
             
-            // Ride type
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            // User info
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Icon(
-                    Icons.Default.DirectionsCar,
+                    Icons.Default.Person,
                     contentDescription = null,
                     modifier = Modifier.size(16.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = Color.Gray
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Ride Type: ${booking.rideType.name}",
+                    text = viewModel.getUserEmail(booking.userId),
                     fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = Color.Gray
                 )
             }
             
-            // Driver assignment (for approved bookings)
+            // Fare
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    Icons.Default.AttachMoney,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    tint = Color.Gray
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "LKR ${booking.fare ?: "200"}",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black
+                )
+            }
+            
+            // Driver info (if assigned)
             if (booking.status == BookingStatus.APPROVED && booking.driverId != null) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Icon(
-                        Icons.Default.Badge,
+                        Icons.Default.DirectionsCar,
                         contentDescription = null,
                         modifier = Modifier.size(16.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = Color.Gray
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Driver: ${viewModel.getDriverName(booking.driverId)}",
                         fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = Color.Gray
                     )
                 }
             }
             
-            Spacer(modifier = Modifier.height(16.dp))
-            
             // Action buttons
-            BookingActions(
-                booking = booking,
-                currentFilter = currentFilter,
-                isLoading = isActionLoading,
-                viewModel = viewModel,
-                onAssignDriver = onAssignDriver
-            )
+            if (booking.status == BookingStatus.REQUESTED) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = { onAssignDriver(booking) },
+                        enabled = !isActionLoading,
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        if (isActionLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(16.dp),
+                                color = Color.White
+                            )
+                        } else {
+                            Text("Approve", fontSize = 14.sp)
+                        }
+                    }
+                    
+                    OutlinedButton(
+                        onClick = { viewModel.rejectBooking(booking.id) },
+                        enabled = !isActionLoading,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        if (isActionLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(16.dp),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        } else {
+                            Text("Reject", fontSize = 14.sp)
+                        }
+                    }
+                }
+            }
         }
+    }
+}
+
+@Composable
+fun SimpleStatusChip(status: BookingStatus) {
+    val (backgroundColor, textColor, text) = when (status) {
+        BookingStatus.REQUESTED -> Triple(Color(0xFFFFF3E0), Color(0xFFE65100), "Requested")
+        BookingStatus.APPROVED -> Triple(Color(0xFFE8F5E8), Color(0xFF2E7D32), "Approved")
+        BookingStatus.CONFIRMED -> Triple(Color(0xFFE8F5E8), Color(0xFF2E7D32), "Confirmed")
+        BookingStatus.IN_PROGRESS -> Triple(Color(0xFFFFF3E0), Color(0xFFE65100), "In Progress")
+        BookingStatus.COMPLETED -> Triple(Color(0xFFE3F2FD), Color(0xFF1565C0), "Completed")
+        BookingStatus.REJECTED -> Triple(Color(0xFFFFEBEE), Color(0xFFC62828), "Rejected")
+        BookingStatus.CANCELLED -> Triple(Color(0xFFFFEBEE), Color(0xFFC62828), "Cancelled")
+    }
+    
+    Surface(
+        color = backgroundColor,
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Text(
+            text = text,
+            color = textColor,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+        )
     }
 }
 
@@ -609,7 +795,7 @@ fun DriverSelectionDialog(
 }
 
 @Composable
-fun EmptyStateContent(filter: BookingStatus) {
+fun EmptyStateContent(filter: BookingStatus, onCreateSampleData: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -625,15 +811,28 @@ fun EmptyStateContent(filter: BookingStatus) {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "No ${filter.name.lowercase()} bookings",
+                text = "No bookings found",
                 fontSize = 18.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                text = "Bookings will appear here when available",
+                text = "Bookings will appear here when users make requests",
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = onCreateSampleData,
+                colors = ButtonDefaults.buttonColors(containerColor = Primary)
+            ) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Add Test Data")
+            }
         }
     }
 }
@@ -687,4 +886,11 @@ private fun formatTimestamp(timestamp: com.google.firebase.Timestamp?): String {
         val date = Date(it.seconds * 1000)
         SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault()).format(date)
     } ?: "Unknown"
+}
+
+private fun formatBookingDate(timestamp: com.google.firebase.Timestamp?): String {
+    return timestamp?.let {
+        val date = Date(it.seconds * 1000)
+        SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(date)
+    } ?: "9 April 2025"
 }
