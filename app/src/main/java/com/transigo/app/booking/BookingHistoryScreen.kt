@@ -178,7 +178,7 @@ fun BookingCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "${booking.type.name} Transfer",
+                    text = "Transfer",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
