@@ -53,7 +53,7 @@ fun OnboardingScreen(navController: NavHostController, viewModel: OnboardingView
         Page(R.drawable.ic_route, R.string.onb_title_3, R.string.onb_desc_3, R.drawable.on3)
     )
 
-    val pagerState = rememberPagerState(initialPage = 0)
+    val pagerState = rememberPagerState(initialPage = 0) { pages.size }
     val scope = rememberCoroutineScope()
     
     // Animated values for smooth transitions
@@ -66,7 +66,6 @@ fun OnboardingScreen(navController: NavHostController, viewModel: OnboardingView
             .background(Color.Black)
     ) {
         HorizontalPager(
-            pageCount = pages.size, 
             state = pagerState, 
             modifier = Modifier.fillMaxSize()
         ) { pageIndex ->

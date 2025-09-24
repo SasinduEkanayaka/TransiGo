@@ -24,6 +24,8 @@ data class BookingState(
     val fromLocation: Location = Location(),
     val toLocation: Location = Location(),
     val paymentMethod: PaymentMethod? = null,
+    val selectedCard: SavedCard? = null,
+    val savedCards: List<SavedCard> = emptyList(),
     val pricing: BookingPricing = BookingPricing(),
     val rideType: RideType = RideType.STANDARD,
     val scheduledAt: Timestamp? = null,
@@ -61,6 +63,20 @@ class BookingViewModel(
     fun updateToLocation(location: Location) {
         _state.value = _state.value.copy(toLocation = location)
         calculatePricing()
+    }
+    
+    fun updateFromLocationAddress(address: String) {
+        val currentLocation = _state.value.fromLocation
+        _state.value = _state.value.copy(
+            fromLocation = currentLocation.copy(address = address)
+        )
+    }
+    
+    fun updateToLocationAddress(address: String) {
+        val currentLocation = _state.value.toLocation
+        _state.value = _state.value.copy(
+            toLocation = currentLocation.copy(address = address)
+        )
     }
     
     fun updatePaymentMethod(paymentMethod: PaymentMethod) {
@@ -246,5 +262,87 @@ class BookingViewModel(
 
     fun clearRatingState() {
         _state.value = _state.value.copy(ratingSuccess = false, error = null)
+    }
+    
+    // Saved Cards functionality
+    fun loadSavedCards(userId: String) {
+        viewModelScope.launch {
+            val firestore = FirebaseFirestore.getInstance()
+            try {
+                firestore.collection("users")
+                    .document(userId)
+                    .collection("savedCards")
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        val cards = documents.map { doc ->
+                            SavedCard(
+                                id = doc.id,
+                                cardNumber = doc.getString("cardNumber") ?: "",
+                                cardholderName = doc.getString("cardholderName") ?: "",
+                                expiryDate = doc.getString("expiryDate") ?: "",
+                                cardBrand = doc.getString("cardBrand") ?: "",
+                                isDefault = doc.getBoolean("isDefault") ?: false
+                            )
+                        }
+                        _state.value = _state.value.copy(savedCards = cards)
+                    }
+                    .addOnFailureListener { e ->
+                        _state.value = _state.value.copy(error = "Failed to load saved cards: ${e.message}")
+                    }
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(error = "Failed to load saved cards: ${e.message}")
+            }
+        }
+    }
+    
+    fun saveCard(userId: String, cardNumber: String, cardholderName: String, expiryDate: String, cvv: String) {
+        viewModelScope.launch {
+            val firestore = FirebaseFirestore.getInstance()
+            try {
+                val cardData = hashMapOf<String, Any>(
+                    "cardNumber" to cardNumber.replace(" ", ""),
+                    "cardholderName" to cardholderName,
+                    "expiryDate" to expiryDate,
+                    "cardBrand" to getCardType(cardNumber),
+                    "isDefault" to _state.value.savedCards.isEmpty(),
+                    "createdAt" to Timestamp.now()
+                )
+                
+                firestore.collection("users")
+                    .document(userId)
+                    .collection("savedCards")
+                    .add(cardData)
+                    .addOnSuccessListener { docRef ->
+                        // Reload saved cards
+                        loadSavedCards(userId)
+                    }
+                    .addOnFailureListener { e ->
+                        _state.value = _state.value.copy(error = "Failed to save card: ${e.message}")
+                    }
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(error = "Failed to save card: ${e.message}")
+            }
+        }
+    }
+    
+    private fun getCardType(cardNumber: String): String {
+        val number = cardNumber.replace(" ", "")
+        return when {
+            number.startsWith("4") -> "Visa"
+            number.startsWith("5") || number.startsWith("2") -> "MasterCard"
+            number.startsWith("3") -> "Amex"
+            else -> "Card"
+        }
+    }
+    
+    fun selectCard(card: SavedCard) {
+        _state.value = _state.value.copy(
+            selectedCard = card,
+            paymentMethod = PaymentMethod.CARD
+        )
+    }
+    
+    fun clearSelectedCard() {
+        _state.value = _state.value.copy(selectedCard = null)
     }
 }

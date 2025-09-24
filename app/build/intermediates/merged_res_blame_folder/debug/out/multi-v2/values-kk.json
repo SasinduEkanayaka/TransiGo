@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.transigo.app-mergeDebugResources-75:/values-kk/values-kk.xml",
+            "outputFile": "com.transigo.app-mergeDebugResources-76:/values-kk/values-kk.xml",
             "map": [
                 {
                     "source": "C:\\Users\\Sasindu\\.gradle\\caches\\transforms-3\\6065805712490ab27ee71219d6140f80\\transformed\\browser-1.4.0\\res\\values-kk\\values-kk.xml",
