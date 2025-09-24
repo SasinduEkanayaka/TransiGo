@@ -37,30 +37,22 @@ class AdminBookingRepository @Inject constructor(
         try {
             val snapshot = bookingsCollection
                 .whereEqualTo("status", status.name)
-                .orderBy("requestedAt", Query.Direction.DESCENDING)
                 .get()
                 .await()
 
             val bookings = snapshot.documents.mapNotNull { doc ->
-                doc.toObject(Booking::class.java)?.copy(id = doc.id)
+                try {
+                    doc.toObject(Booking::class.java)?.copy(id = doc.id)
+                } catch (e: Exception) {
+                    // Log the error but continue processing other bookings
+                    null
+                }
             }
             
-            emit(Result.success(bookings))
+            val sorted = bookings.sortedByDescending { it.requestedAt?.toDate() }
+            emit(Result.success(sorted))
         } catch (e: Exception) {
-            if (e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.FAILED_PRECONDITION) {
-                val fallback = bookingsCollection
-                    .whereEqualTo("status", status.name)
-                    .get()
-                    .await()
-
-                val bookings = fallback.documents.mapNotNull { doc ->
-                    doc.toObject(Booking::class.java)?.copy(id = doc.id)
-                }
-                val sorted = bookings.sortedByDescending { it.requestedAt?.toDate() }
-                emit(Result.success(sorted))
-            } else {
-                emit(Result.failure(e))
-            }
+            emit(Result.failure(e))
         }
     }
 
@@ -69,17 +61,26 @@ class AdminBookingRepository @Inject constructor(
      */
     fun getAllBookings(): Flow<Result<List<Booking>>> = flow {
         try {
-            val snapshot = bookingsCollection
-                .orderBy("requestedAt", Query.Direction.DESCENDING)
-                .get()
-                .await()
+            println("AdminBookingRepository: Fetching all bookings...")
+            val snapshot = bookingsCollection.get().await()
+            println("AdminBookingRepository: Got ${snapshot.documents.size} documents")
 
             val bookings = snapshot.documents.mapNotNull { doc ->
-                doc.toObject(Booking::class.java)?.copy(id = doc.id)
+                try {
+                    doc.toObject(Booking::class.java)?.copy(id = doc.id)
+                } catch (e: Exception) {
+                    // Log the error but continue processing other bookings
+                    println("AdminBookingRepository: Error parsing booking ${doc.id}: ${e.message}")
+                    null
+                }
             }
             
-            emit(Result.success(bookings))
+            // Sort manually after fetching to avoid index issues
+            val sorted = bookings.sortedByDescending { it.requestedAt?.toDate() }
+            println("AdminBookingRepository: Returning ${sorted.size} valid bookings")
+            emit(Result.success(sorted))
         } catch (e: Exception) {
+            println("AdminBookingRepository: Error fetching bookings: ${e.message}")
             emit(Result.failure(e))
         }
     }
@@ -267,6 +268,79 @@ class AdminBookingRepository @Inject constructor(
                 adminName = adminName
             )
             
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Create sample bookings for testing (admin only)
+     */
+    suspend fun createSampleBookings(): Result<Unit> {
+        return try {
+            val sampleBookings = listOf(
+                hashMapOf<String, Any>(
+                    "userId" to "sample_user_1",
+                    "type" to BookingType.AIRPORT.name,
+                    "pickupName" to "Matara",
+                    "dropName" to "Colombo",
+                    "rideType" to RideType.STANDARD.name,
+                    "requestedAt" to FieldValue.serverTimestamp(),
+                    "status" to BookingStatus.REQUESTED.name,
+                    "fare" to 200.0
+                ),
+                hashMapOf<String, Any>(
+                    "userId" to "sample_user_2",
+                    "type" to BookingType.AIRPORT.name,
+                    "pickupName" to "Matara",
+                    "dropName" to "Katunayake",
+                    "rideType" to RideType.VAN.name,
+                    "requestedAt" to FieldValue.serverTimestamp(),
+                    "status" to BookingStatus.REQUESTED.name,
+                    "fare" to 120.0
+                ),
+                hashMapOf<String, Any>(
+                    "userId" to "sample_user_3",
+                    "type" to BookingType.HOTEL.name,
+                    "pickupName" to "Colombo",
+                    "dropName" to "Galle",
+                    "rideType" to RideType.LUX.name,
+                    "requestedAt" to FieldValue.serverTimestamp(),
+                    "status" to BookingStatus.APPROVED.name,
+                    "fare" to 150.0,
+                    "driverId" to "sample_driver_1"
+                )
+            )
+
+            val batch = firestore.batch()
+            sampleBookings.forEach { booking ->
+                val docRef = bookingsCollection.document()
+                batch.set(docRef, booking)
+            }
+            
+            // Also create sample users
+            val sampleUsers = listOf(
+                hashMapOf<String, Any>(
+                    "email" to "user1@example.com",
+                    "name" to "John Doe"
+                ),
+                hashMapOf<String, Any>(
+                    "email" to "user2@example.com", 
+                    "name" to "Jane Smith"
+                ),
+                hashMapOf<String, Any>(
+                    "email" to "user3@example.com",
+                    "name" to "Mike Johnson"
+                )
+            )
+
+            sampleUsers.forEachIndexed { index, user ->
+                val userRef = usersCollection.document("sample_user_${index + 1}")
+                batch.set(userRef, user)
+            }
+
+            batch.commit().await()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

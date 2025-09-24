@@ -13,6 +13,7 @@ data class Booking(
     val scheduledAt: Timestamp? = null, // Optional scheduling
     val status: BookingStatus = BookingStatus.REQUESTED,
     val driverId: String? = null,
+    val fare: Double? = null,
     val rating: BookingRating = BookingRating()
 )
 

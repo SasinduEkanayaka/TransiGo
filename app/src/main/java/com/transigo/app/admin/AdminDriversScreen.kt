@@ -38,6 +38,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.transigo.app.core.ui.theme.*
+import com.google.firebase.Timestamp
+import java.text.SimpleDateFormat
+import java.util.*
 
 data class DriverUiState(
     val drivers: List<Driver> = emptyList(),
@@ -200,6 +203,7 @@ class DriverViewModel @Inject constructor(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminDriversScreenContent(
+    navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: DriverViewModel = hiltViewModel()
 ) {
@@ -211,77 +215,99 @@ fun AdminDriversScreenContent(
         }
     }
 
-    val backgroundGradient = Brush.verticalGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-            MaterialTheme.colorScheme.secondary.copy(alpha = 0.05f),
-            MaterialTheme.colorScheme.surface
-        )
-    )
-
-    Column(
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .background(backgroundGradient)
-            .padding(20.dp)
+            .background(Color.White)
     ) {
-        // Header
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
         ) {
+            // Header with back button and title
             Row(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                IconButton(
+                    onClick = { navController.navigateUp() }
+                ) {
+                    Icon(
+                        Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color.Black
+                    )
+                }
+                
+                Spacer(modifier = Modifier.width(8.dp))
+                
                 Text(
-                    text = "Drivers Management",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
+                    text = "Drivers",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black
                 )
+            }
 
-                ExtendedFloatingActionButton(onClick = { viewModel.showAddDriverDialog() }) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                    Spacer(Modifier.width(8.dp))
-                    Text("Add Driver")
+            // Section title
+            Text(
+                text = "Drivers",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+
+            // Drivers List
+            if (uiState.isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) { 
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary) 
+                }
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(bottom = 80.dp) // Space for FAB
+                ) {
+                    items(uiState.filteredDrivers) { driver ->
+                        ModernDriverCard(
+                            driver = driver,
+                            onEditClick = { viewModel.showEditDriverDialog(driver) },
+                            onDeleteClick = { viewModel.deleteDriver(driver.id) }
+                        )
+                    }
+                    
+                    // Add empty space if no drivers
+                    if (uiState.filteredDrivers.isEmpty()) {
+                        item {
+                            EmptyDriversState(
+                                onAddClick = { viewModel.showAddDriverDialog() }
+                            )
+                        }
+                    }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Search Bar
-        OutlinedTextField(
-            value = uiState.searchQuery,
-            onValueChange = viewModel::updateSearchQuery,
-            label = { Text("Search drivers...") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Drivers List
-        if (uiState.isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) { CircularProgressIndicator() }
-        } else {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(uiState.filteredDrivers) { driver ->
-                    DriverItem(
-                        driver = driver,
-                        onEditClick = { viewModel.showEditDriverDialog(driver) },
-                        onDeleteClick = { viewModel.deleteDriver(driver.id) }
-                    )
-                }
-            }
+        // Floating Action Button
+        FloatingActionButton(
+            onClick = { viewModel.showAddDriverDialog() },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            containerColor = Color(0xFF6B46C1), // Purple color matching design
+            contentColor = Color.White
+        ) {
+            Icon(
+                Icons.Default.Add,
+                contentDescription = "Add Driver",
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 
@@ -304,11 +330,11 @@ fun AdminDriversScreenContent(
 // Wrapper matching NavGraph signature
 @Composable
 fun AdminDriversScreen(navController: NavController) {
-    AdminDriversScreenContent()
+    AdminDriversScreenContent(navController = navController)
 }
 
 @Composable
-fun DriverItem(
+fun ModernDriverCard(
     driver: Driver,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
@@ -316,66 +342,144 @@ fun DriverItem(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F9FA))
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
+            // Date (formatted from createdAt if available, or current date)
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = driver.fullName,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "Phone: ${driver.phoneNumber}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = "Vehicle: ${driver.vehicleType} - ${driver.vehicleNumber}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                
-                Row {
-                    // Active/Inactive Badge
-                    AssistChip(
-                        onClick = { },
-                        label = { Text(if (driver.isActive) "Active" else "Inactive") },
-                        colors = AssistChipDefaults.assistChipColors(
-                            containerColor = if (driver.isActive) 
-                                MaterialTheme.colorScheme.primaryContainer 
-                            else 
-                                MaterialTheme.colorScheme.errorContainer
-                        )
-                    )
-                    
-                    Spacer(modifier = Modifier.width(8.dp))
-                    
-                    // Actions
-                    IconButton(onClick = onEditClick) {
-                        Icon(Icons.Default.Edit, contentDescription = "Edit Driver")
-                    }
-                    IconButton(onClick = onDeleteClick) {
-                        Icon(
-                            Icons.Default.Delete, 
-                            contentDescription = "Delete Driver",
-                            tint = MaterialTheme.colorScheme.error
-                        )
-                    }
-                }
+                Icon(
+                    Icons.Default.DateRange,
+                    contentDescription = null,
+                    tint = Color.Gray,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = formatDriverDate(driver.createdAt),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
             }
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Driver Name
+            Text(
+                text = driver.fullName,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            // Vehicle Info
+            Text(
+                text = "Vehicle - ${driver.vehicleType.name.lowercase().replaceFirstChar { it.uppercase() }}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Black
+            )
+            
+            Spacer(modifier = Modifier.height(4.dp))
+            
+            // Vehicle ID/Number
+            Text(
+                text = "${getVehiclePrefix(driver.vehicleType)} - ${driver.vehicleNumber}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Black
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            // Vehicle ID formatted
+            Text(
+                text = "VehID-${generateVehicleId(driver.id)}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )
         }
     }
+}
+
+@Composable
+fun EmptyDriversState(
+    onAddClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            Icons.Default.Person,
+            contentDescription = null,
+            modifier = Modifier.size(64.dp),
+            tint = Color.Gray
+        )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        Text(
+            text = "No drivers found",
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.Gray
+        )
+        
+        Spacer(modifier = Modifier.height(8.dp))
+        
+        Text(
+            text = "Add your first driver to get started",
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Gray
+        )
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        Button(
+            onClick = onAddClick,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF6B46C1)
+            )
+        ) {
+            Icon(Icons.Default.Add, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Add Driver")
+        }
+    }
+}
+
+// Helper functions
+private fun formatDriverDate(timestamp: Timestamp?): String {
+    val dateFormat = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
+    return if (timestamp != null) {
+        dateFormat.format(timestamp.toDate())
+    } else {
+        dateFormat.format(Date())
+    }
+}
+
+private fun getVehiclePrefix(vehicleType: VehicleType): String {
+    return when (vehicleType) {
+        VehicleType.CAR -> "CAA"
+        VehicleType.VAN -> "VAA" 
+        VehicleType.BUS -> "BUS"
+    }
+}
+
+private fun generateVehicleId(driverId: String): String {
+    // Generate a simple 4-digit ID based on driver ID hash
+    val hash = driverId.hashCode()
+    return String.format("%04d", kotlin.math.abs(hash % 10000))
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
