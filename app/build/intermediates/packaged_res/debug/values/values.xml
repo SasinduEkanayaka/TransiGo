@@ -111,12 +111,12 @@
     <string name="nav_home">Home</string>
     <string name="nav_profile">Profile</string>
     <string name="next">Next</string>
-    <string name="onb_desc_1">Book airport and hotel transfers with a few taps. Simple and fast.</string>
-    <string name="onb_desc_2">Track bookings, drivers, and notifications as they happen.</string>
-    <string name="onb_desc_3">Verified drivers and secure payments for peace of mind.</string>
-    <string name="onb_title_1">Plan your ride in seconds</string>
-    <string name="onb_title_2">Real-time updates</string>
-    <string name="onb_title_3">Reliable and safe</string>
+    <string name="onb_desc_1">Travelling refers to a trip or a journey to some distant places. It usually refers to visiting more than one places.</string>
+    <string name="onb_desc_2">There is craving in every person to see the other faces of nature and to know the other people of the world.</string>
+    <string name="onb_desc_3">Travelling is the best way to learn new things, A person travels for both pleasure and knowledge.</string>
+    <string name="onb_title_1">Live life with no excuses,\nTravel with no regret</string>
+    <string name="onb_title_2">The world within reach.\nTo Travel is to Live</string>
+    <string name="onb_title_3">Jobs fill your pocket,\nAdventures fill your soul</string>
     <string name="project_id" translatable="false">taxi-transigo</string>
     <string name="skip">Skip</string>
     <style name="Base.Theme.TransiGo" parent="Theme.Material3.DayNight">
